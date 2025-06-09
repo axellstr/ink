@@ -1,0 +1,488 @@
+---
+import '../../styles/global.css';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import ShoppingCart from '../../components/ShoppingCart.astro';
+import { products } from '../../data/products.js';
+
+// Generate static paths for all products
+export async function getStaticPaths() {
+  return products.map((product) => ({
+    params: { id: product.id.toString() },
+    props: { product },
+  }));
+}
+
+// Get the product from props
+const { product } = Astro.props;
+
+// Quality options
+const qualityOptions = [
+  {
+    name: "Standard",
+    description: "100% Cotton, Regular fit",
+    price: product.price,
+    selected: true
+  },
+  {
+    name: "Premium",
+    description: "Organic Cotton Blend, Tailored fit",
+    price: `$${(parseFloat(product.price.replace('$', '')) + 10).toFixed(2)}`,
+    selected: false
+  }
+];
+
+// Size options
+const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+
+// Color options
+const colors = [
+  { name: 'White', value: 'white', class: 'bg-white border-gray-300' },
+  { name: 'Black', value: 'black', class: 'bg-black' },
+  { name: 'Navy', value: 'navy', class: 'bg-blue-900' },
+  { name: 'Gray', value: 'gray', class: 'bg-gray-500' }
+];
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{product.title} - Premium T-Shirt</title>
+  </head>
+  <body class="bg-bg text-fg transition-colors duration-500">
+    <Navbar />
+    
+    <!-- Main Product Content -->
+    <main class="relative isolate px-6 pt-24 pb-16 sm:pt-32 lg:px-8">
+      <!-- Background decoration -->
+      <div class="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl" aria-hidden="true">
+        <div class="mx-auto aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-secondary/20 to-primary/20 opacity-30" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      </div>
+
+      <div class="mx-auto max-w-7xl">
+        <!-- Back to Designs Link -->
+        <div class="mb-8">
+          <a href="/shop" class="inline-flex items-center gap-2 text-fg/70 hover:text-primary transition-colors duration-200">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            Back to Designs
+          </a>
+        </div>
+
+        <!-- Product Details Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          <!-- Product Images -->
+          <div class="space-y-4">
+            <!-- Main Image -->
+            <div class="aspect-square bg-bg/60 rounded-2xl overflow-hidden relative">
+              <img 
+                id="main-image"
+                src={product.image} 
+                alt={product.title}
+                class="h-full w-full object-cover"
+              />
+              <!-- Front View Badge -->
+              <div class="absolute top-4 left-4">
+                <span class="inline-flex items-center rounded-full bg-bg/90 px-3 py-1 text-xs font-medium text-fg">
+                  Front View
+                </span>
+              </div>
+              <!-- QR Code Badge -->
+              <div class="absolute bottom-4 right-4">
+                <span class="inline-flex items-center rounded-lg bg-bg/90 px-3 py-2 text-xs font-medium text-fg">
+                  📱 QR Code Embedded
+                </span>
+              </div>
+            </div>
+
+            <!-- Thumbnail Images -->
+            <div class="grid grid-cols-4 gap-3">
+              {product.images.map((image, index) => (
+                <button 
+                  class={`aspect-square bg-bg/60 rounded-lg overflow-hidden border-2 transition-colors duration-200 thumbnail-btn ${index === 0 ? 'border-primary' : 'border-transparent hover:border-primary'}`}
+                  data-image={image}
+                >
+                  <img 
+                    src={image} 
+                    alt={`${product.title} view ${index + 1}`}
+                    class="h-full w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Product Information -->
+          <div class="space-y-8">
+            <!-- Product Header -->
+            <div>
+              <h1 class="text-4xl font-bold text-fg mb-4">{product.title}</h1>
+              <p class="text-lg text-fg/70 mb-6">{product.description}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-3xl font-bold text-fg" id="current-price">{product.price}</span>
+                <span class="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                  In stock
+                </span>
+              </div>
+            </div>
+
+            <!-- Quality Selection -->
+            <div>
+              <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full"></span>
+                Quality
+              </h3>
+              <div class="space-y-3">
+                {qualityOptions.map((option, index) => (
+                  <label class={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:border-primary/50 transition-colors duration-200 quality-option relative ${option.selected ? 'border-primary bg-primary/5' : 'border-fg/20'}`}>
+                    <div class="flex items-center gap-3">
+                      <input 
+                        type="radio" 
+                        name="quality" 
+                        value={option.name.toLowerCase()}
+                        checked={option.selected}
+                        class="w-4 h-4 text-primary border-fg/30 focus:ring-primary"
+                        data-price={option.price}
+                        onchange="updatePrice()"
+                      />
+                      <div>
+                        <div class="font-medium text-fg">{option.name}</div>
+                        <div class="text-sm text-fg/70">{option.description}</div>
+                      </div>
+                    </div>
+                    <div class="font-semibold text-fg">{option.price}</div>
+                    {option.selected && (
+                      <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                        <span class="inline-flex items-center rounded-full bg-primary px-2 py-1 text-xs font-medium text-bg">
+                          Selected
+                        </span>
+                      </div>
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <!-- Size Selection -->
+            <div>
+              <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full"></span>
+                Size
+              </h3>
+              <div class="flex gap-3">
+                {sizes.map((size, index) => (
+                  <button 
+                    class={`px-4 py-2 border border-fg/20 rounded-lg font-medium transition-all duration-200 hover:border-primary size-btn ${index === 1 ? 'border-primary bg-primary/10 text-primary' : 'text-fg hover:text-primary'}`}
+                    data-size={size}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Color Selection -->
+            <div>
+              <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full"></span>
+                Color
+              </h3>
+              <div class="flex gap-3">
+                {colors.map((color, index) => (
+                  <button 
+                    class={`w-12 h-12 rounded-lg border-2 transition-all duration-200 hover:scale-110 color-btn ${color.class} ${index === 1 ? 'border-primary ring-2 ring-primary/30' : 'border-fg/20 hover:border-primary'}`}
+                    data-color={color.value}
+                    title={color.name}
+                  >
+                    {index === 1 && (
+                      <svg class="w-6 h-6 text-white mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Custom URL -->
+            <div>
+              <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full"></span>
+                Custom URL
+                <svg class="w-4 h-4 text-fg/50" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                </svg>
+              </h3>
+              <div class="relative">
+                <input 
+                  type="url" 
+                  placeholder="https://your-website.com"
+                  class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg class="w-5 h-5 text-fg/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                  </svg>
+                </div>
+              </div>
+              <p class="text-sm text-primary mt-2">
+                Optional: Add your own URL to make this QR code direct to your preferred landing page. Leave blank to use our default URL.
+              </p>
+            </div>
+
+            <!-- Quantity -->
+            <div>
+              <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary rounded-full"></span>
+                Quantity
+              </h3>
+              <div class="flex items-center gap-4">
+                <div class="flex items-center border border-fg/20 rounded-lg">
+                  <button 
+                    class="px-3 py-2 text-fg hover:text-primary transition-colors duration-200 quantity-decrease"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                    </svg>
+                  </button>
+                  <input 
+                    type="number" 
+                    value="1" 
+                    min="1" 
+                    max="99"
+                    id="quantity-input"
+                    class="w-16 py-2 text-center bg-transparent text-fg border-0 focus:ring-0 outline-none"
+                    readonly
+                  />
+                  <button 
+                    class="px-3 py-2 text-fg hover:text-primary transition-colors duration-200 quantity-increase"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m7-7H5" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selection Summary -->
+            <div class="bg-bg/60 rounded-lg p-4 border border-fg/10">
+              <h4 class="font-semibold text-fg mb-3">Your Selection</h4>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-fg/70">Size:</span>
+                  <span class="text-primary font-medium" id="selected-size">M</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-fg/70">Color:</span>
+                  <span class="text-primary font-medium" id="selected-color">Black</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-fg/70">Quality:</span>
+                  <span class="text-primary font-medium" id="selected-quality">Standard</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-fg/70">Quantity:</span>
+                  <span class="text-primary font-medium" id="selected-quantity">1</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+              <button id="add-to-cart-btn" 
+                      class="w-full bg-primary text-bg py-4 px-6 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2"
+                      data-product-id={product.id}
+                      data-product-title={product.title}
+                      data-product-price={product.price}
+                      data-product-image={product.image}
+                      data-product-category={product.category}>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                Add to Cart
+              </button>
+              <button class="w-full bg-fg text-bg py-4 px-6 rounded-lg font-semibold text-lg hover:bg-fg/90 transition-colors duration-200">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+    <ShoppingCart />
+
+    <!-- JavaScript for interactivity -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Thumbnail functionality
+        document.querySelectorAll('.thumbnail-btn').forEach(button => {
+          button.addEventListener('click', function(this: HTMLElement) {
+            const newImage = this.dataset.image;
+            const mainImage = document.getElementById('main-image') as HTMLImageElement;
+            if (mainImage && newImage) {
+              mainImage.src = newImage;
+            }
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail-btn').forEach(btn => {
+              btn.classList.remove('border-primary');
+              btn.classList.add('border-transparent');
+            });
+            this.classList.add('border-primary');
+            this.classList.remove('border-transparent');
+          });
+        });
+
+        // Size selection functionality
+        document.querySelectorAll('.size-btn').forEach(button => {
+          button.addEventListener('click', function(this: HTMLElement) {
+            document.querySelectorAll('.size-btn').forEach(btn => {
+              btn.classList.remove('border-primary', 'bg-primary/10', 'text-primary');
+              btn.classList.add('text-fg');
+            });
+            this.classList.add('border-primary', 'bg-primary/10', 'text-primary');
+            this.classList.remove('text-fg');
+            
+            const selectedSizeEl = document.getElementById('selected-size');
+            if (selectedSizeEl && this.dataset.size) {
+              selectedSizeEl.textContent = this.dataset.size;
+            }
+          });
+        });
+
+        // Color selection functionality
+        document.querySelectorAll('.color-btn').forEach(button => {
+          button.addEventListener('click', function(this: HTMLElement) {
+            document.querySelectorAll('.color-btn').forEach(btn => {
+              btn.classList.remove('border-primary', 'ring-2', 'ring-primary/30');
+              btn.classList.add('border-fg/20');
+              btn.innerHTML = '';
+            });
+            this.classList.add('border-primary', 'ring-2', 'ring-primary/30');
+            this.classList.remove('border-fg/20');
+            
+            // Add checkmark
+            this.innerHTML = `
+              <svg class="w-6 h-6 text-white mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+              </svg>
+            `;
+            
+            const selectedColorEl = document.getElementById('selected-color');
+            if (selectedColorEl && this.title) {
+              selectedColorEl.textContent = this.title;
+            }
+          });
+        });
+
+        // Quantity controls
+        const quantityInput = document.getElementById('quantity-input') as HTMLInputElement;
+        const quantityDecrease = document.querySelector('.quantity-decrease');
+        const quantityIncrease = document.querySelector('.quantity-increase');
+
+        function updateQuantityDisplay(value: number) {
+          if (quantityInput) {
+            quantityInput.value = value.toString();
+          }
+          const selectedQuantityEl = document.getElementById('selected-quantity');
+          if (selectedQuantityEl) {
+            selectedQuantityEl.textContent = value.toString();
+          }
+        }
+
+        quantityDecrease?.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput?.value || '1');
+          const newValue = Math.max(1, currentValue - 1);
+          updateQuantityDisplay(newValue);
+        });
+
+        quantityIncrease?.addEventListener('click', function() {
+          const currentValue = parseInt(quantityInput?.value || '1');
+          const newValue = Math.min(99, currentValue + 1);
+          updateQuantityDisplay(newValue);
+        });
+
+        // Update price based on quality selection
+        function updatePrice() {
+          const selectedQuality = document.querySelector('input[name="quality"]:checked') as HTMLInputElement;
+          if (selectedQuality) {
+            const priceEl = document.getElementById('current-price');
+            const qualityEl = document.getElementById('selected-quality');
+            
+            if (priceEl && selectedQuality.dataset.price) {
+              priceEl.textContent = selectedQuality.dataset.price;
+            }
+            
+            if (qualityEl && selectedQuality.value) {
+              qualityEl.textContent = selectedQuality.value.charAt(0).toUpperCase() + selectedQuality.value.slice(1);
+            }
+          }
+        }
+
+        // Initialize quality radio listeners
+        document.querySelectorAll('input[name="quality"]').forEach(radio => {
+          radio.addEventListener('change', updatePrice);
+        });
+
+        // Add to cart functionality
+      const addToCartBtn = document.getElementById('add-to-cart-btn');
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+          // Get product data from button attributes
+          const productId = this.dataset.productId;
+          const productTitle = this.dataset.productTitle;
+          const productPrice = this.dataset.productPrice;
+          const productImage = this.dataset.productImage;
+          const productCategory = this.dataset.productCategory;
+
+          // Get current selections
+          const selectedQuality = document.querySelector('input[name="quality"]:checked') as HTMLInputElement;
+          const selectedSizeEl = document.querySelector('.size-btn.border-primary') as HTMLElement;
+          const selectedColorEl = document.querySelector('.color-btn.border-primary') as HTMLElement;
+          const quantityInput = document.getElementById('quantity-input') as HTMLInputElement;
+          const priceEl = document.getElementById('current-price');
+          
+          const selectedSize = selectedSizeEl?.dataset.size || 'M';
+          const selectedColor = selectedColorEl?.title || 'Black';
+          const quantity = parseInt(quantityInput?.value || '1');
+          const currentPrice = priceEl?.textContent || productPrice;
+
+          // Create product data for cart
+          const productData = {
+            id: parseInt(productId || '0'),
+            title: productTitle || '',
+            price: currentPrice || '',
+            image: productImage || '',
+            category: productCategory || '',
+            size: selectedSize,
+            color: selectedColor,
+            quality: selectedQuality?.value || 'standard'
+          };
+
+          // Add multiple items if quantity > 1
+          for (let i = 0; i < quantity; i++) {
+            const addToCartEvent = new CustomEvent('addToCart', {
+              detail: productData,
+              bubbles: true
+            });
+            document.dispatchEvent(addToCartEvent);
+          }
+
+          // Visual feedback
+          this.classList.add('scale-95');
+          setTimeout(() => {
+            this.classList.remove('scale-95');
+          }, 150);
+        });
+      }
+      });
+    </script>
+  </body>
+</html> 

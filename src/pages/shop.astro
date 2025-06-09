@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import FilterSection from '../components/FilterSection.astro';
+import CustomDesignCTA from '../components/CustomDesignCTA.astro';
+import ShoppingCart from '../components/ShoppingCart.astro';
+import { products } from '../data/products.js';
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Shop - Premium T-Shirt Collection</title>
+  </head>
+  <body class="bg-bg text-fg transition-colors duration-500">
+    <Navbar />
+    
+    <!-- Main Shop Content -->
+    <main class="relative isolate px-6 pt-24 pb-16 sm:pt-32 lg:px-8">
+      <!-- Background decoration -->
+
+      <div class="mx-auto max-w-7xl">
+        <!-- Page Header -->
+        <div class="mx-auto max-w-4xl text-center mb-16">
+          <h1 class="text-5xl font-semibold tracking-tight text-balance text-fg sm:text-6xl">
+            Shop Collection
+          </h1>
+          <p class="mx-auto mt-6 max-w-2xl text-center text-lg font-medium text-pretty text-fg/70 sm:text-xl/8">
+            Discover our complete collection of premium t-shirts, each designed with attention to detail and crafted for comfort.
+          </p>
+        </div>
+
+        <!-- Filter Section -->
+        <FilterSection />
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mb-24">
+          {products.map((product) => (
+            <div data-category={product.category}>
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+
+        <!-- Custom Design CTA -->
+        <CustomDesignCTA />
+      </div>
+    </main>
+
+    <Footer />
+    <ShoppingCart />
+  </body>
+</html> 

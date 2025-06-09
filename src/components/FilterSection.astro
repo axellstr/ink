@@ -1,0 +1,191 @@
+---
+// Filter options
+const categories = [
+  { value: 'all', label: 'All Designs' },
+  { value: 'minimal', label: 'Minimal' },
+  { value: 'graphic', label: 'Graphic' },
+  { value: 'vintage', label: 'Vintage' }
+];
+
+const sortOptions = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'price-low', label: 'Price: Low to High' },
+  { value: 'price-high', label: 'Price: High to Low' },
+  { value: 'newest', label: 'Newest First' }
+];
+---
+
+<div class="mb-12">
+  <div class="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
+    <!-- Category Filters -->
+    <div class="flex flex-wrap gap-2">
+      <span class="text-sm font-medium text-fg/70 mr-2 flex items-center">Filter:</span>
+      {categories.map((category) => (
+        <button 
+          class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border border-fg/20 hover:border-primary hover:text-primary"
+          data-category={category.value}
+          data-active={category.value === 'all' ? 'true' : 'false'}
+        >
+          {category.label}
+        </button>
+      ))}
+    </div>
+
+    <!-- Sort Options -->
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-medium text-fg/70">Sort by:</span>
+      <select 
+        id="sort-select"
+        class="bg-bg border border-fg/20 text-fg text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary transition-colors duration-200"
+      >
+        {sortOptions.map((option) => (
+          <option value={option.value}>{option.label}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+
+  <!-- Active Filters Display -->
+  <div class="mt-4 flex items-center gap-2" id="active-filters" style="display: none;">
+    <span class="text-sm text-fg/70">Active filters:</span>
+    <div class="flex gap-2" id="filter-tags"></div>
+    <button 
+      id="clear-filters" 
+      class="text-sm text-primary hover:text-primary/80 transition-colors duration-200 ml-2"
+    >
+      Clear all
+    </button>
+  </div>
+</div>
+
+<style>
+  .filter-btn[data-active="true"] {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    border-color: var(--color-primary);
+  }
+
+  .filter-btn[data-active="true"]:hover {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+    opacity: 0.9;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+  }
+
+  .dark select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  }
+</style>
+
+<script>
+  // Filter functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+    const activeFiltersDiv = document.getElementById('active-filters');
+    const filterTagsDiv = document.getElementById('filter-tags');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    
+    let activeCategory = 'all';
+    let activeSort = 'featured';
+
+    // Category filter handling
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const category = button.getAttribute('data-category');
+        
+        // Update active states
+        filterButtons.forEach(btn => btn.setAttribute('data-active', 'false'));
+        button.setAttribute('data-active', 'true');
+        
+        activeCategory = category || 'all';
+        updateFilters();
+      });
+    });
+
+    // Sort handling
+    sortSelect?.addEventListener('change', function() {
+      activeSort = this.value;
+      updateFilters();
+    });
+
+    // Clear filters
+    clearFiltersBtn?.addEventListener('click', function() {
+      // Reset to default state
+      filterButtons.forEach(btn => {
+        const category = btn.getAttribute('data-category');
+        btn.setAttribute('data-active', category === 'all' ? 'true' : 'false');
+      });
+      sortSelect.value = 'featured';
+      activeCategory = 'all';
+      activeSort = 'featured';
+      updateFilters();
+    });
+
+    function updateFilters() {
+      // Show/hide products based on category
+      const productCards = document.querySelectorAll('[data-category]');
+      
+      productCards.forEach(card => {
+        const cardCategory = card.getAttribute('data-category');
+        const shouldShow = activeCategory === 'all' || cardCategory === activeCategory;
+        
+        if (shouldShow) {
+          (card as HTMLElement).style.display = 'block';
+          card.classList.remove('hidden');
+        } else {
+          (card as HTMLElement).style.display = 'none';
+          card.classList.add('hidden');
+        }
+      });
+
+      // Update active filters display
+      updateActiveFiltersDisplay();
+      
+      // Apply sorting (simplified - in a real app you'd re-order the DOM)
+      console.log(`Filtering by: ${activeCategory}, Sorting by: ${activeSort}`);
+    }
+
+    function updateActiveFiltersDisplay() {
+      const hasActiveFilters = activeCategory !== 'all' || activeSort !== 'featured';
+      
+      if (hasActiveFilters && activeFiltersDiv && filterTagsDiv) {
+        activeFiltersDiv.style.display = 'flex';
+        
+        let tags = '';
+        if (activeCategory !== 'all') {
+          tags += `<span class="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary text-xs rounded-full">
+            ${activeCategory}
+            <button class="hover:bg-primary/20 rounded-full p-0.5" onclick="clearCategoryFilter()">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+            </button>
+          </span>`;
+        }
+        
+        filterTagsDiv.innerHTML = tags;
+      } else if (activeFiltersDiv) {
+        activeFiltersDiv.style.display = 'none';
+      }
+    }
+
+    // Global function for clearing category filter
+    (window as any).clearCategoryFilter = function() {
+      filterButtons.forEach(btn => {
+        const category = btn.getAttribute('data-category');
+        btn.setAttribute('data-active', category === 'all' ? 'true' : 'false');
+      });
+      activeCategory = 'all';
+      updateFilters();
+    };
+  });
+</script> 

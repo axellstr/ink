@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Define theme colors as hex values */
+:root {
+  --color-bg: #F8F8F8;     /* Light gray (Seasalt) */
+  --color-fg: #2b2424;     /* Dark gray (Eerie Black) */
+  --color-primary: #5A0DAD; /* Bright chartreuse */
+  --color-secondary: #DCFF00; /* Purple (Grape) */
+  --color-bg-muted: #bebebe;
+}
+
+.dark {
+  --color-bg: #0e0f0f;     /* Dark gray (Eerie Black) */
+  --color-fg: #F8F8F8;     /* Light gray (Seasalt) */
+  --color-primary: #DCFF00; /* Bright chartreuse (unchanged) */
+  --color-secondary: #5A0DAD; /* Brighter purple for dark mode contrast */
+  --color-bg-muted: #1a1a1a;
+}
+
+/* Create utility classes manually */
+.bg-bg { background-color: var(--color-bg); }
+.bg-bg-muted { background-color: var(--color-bg-muted); }
+.text-fg { color: var(--color-fg); }
+.text-bg { color: var(--color-bg); }
+.bg-primary { background-color: var(--color-primary); }
+.text-primary { color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.text-secondary { color: var(--color-secondary); }
+
+/* Global cursor pointer for interactive elements */
+button,
+a,
+[role="button"],
+[role="link"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+summary,
+.cursor-pointer,
+[onclick],
+[data-clickable] {
+  cursor: pointer;
+}
+
+.dark .border{
+  border: 1px solid rgba(255, 255, 255, 0.342);
+  border-radius: 0.75rem;
+}
+
+.border{
+  border: 1px solid rgba(0, 0, 0, 0.342);
+  border-radius: 0.75rem;
+}
+

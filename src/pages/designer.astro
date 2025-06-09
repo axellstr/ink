@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import ProductDisplay from '../components/3d/ProductDisplay.astro';
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Designer - 刃と牙</title>
+    <meta name="description" content="Design and customize your perfect t-shirt with our advanced 3D designer tool." />
+  </head>
+  <body class="bg-bg text-fg transition-colors duration-500">
+    <Navbar />
+    
+    <main class="min-h-screen">
+      <!-- Hero Section -->
+      <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="text-4xl md:text-6xl font-bold mb-6">
+            <span class="text-primary">Design</span> Your Vision
+          </h1>
+          <p class="text-lg md:text-xl opacity-80 max-w-2xl mx-auto mb-8">
+            Create unique t-shirt designs with our advanced 3D designer. 
+            Visualize your ideas in real-time and bring them to life.
+          </p>
+        </div>
+      </section>
+
+      <!-- 3D Viewer - Main Content -->
+      <section class="pb-20">
+        <div class="max-w-5xl mx-auto px-4">
+          <div>
+            <div class="mb-6 flex items-center justify-between">
+              <div class="flex items-center space-x-2 text-sm opacity-70">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                <span>Click and drag to rotate • Scroll to zoom</span>
+              </div>
+            </div>
+            <ProductDisplay 
+              containerClass="designer-viewer-minimal"
+              productLabel="Designer Preview"
+              height="min(80vh, 1000px)"
+            />
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+
+  </body>
+</html> 

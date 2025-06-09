@@ -1,0 +1,36 @@
+---
+interface Props {
+  containerClass?: string;
+  productLabel?: string;
+  productTitle?: string;
+  height?: string;
+}
+
+const { 
+  containerClass = "",
+  productLabel = "刃と牙",
+  productTitle = "刃と牙",
+  height = "min(750px, 90vh)"
+} = Astro.props;
+
+import styles from './ProductDisplay.module.css';
+---
+
+<div 
+  id="product-container" 
+  class={`${styles.container} ${containerClass}`} 
+  data-label={productLabel} 
+  data-title={productTitle}
+  style={`height: ${height};`}
+></div>
+
+<script>
+  import ProductViewer from './ProductViewer.js';
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('product-container');
+    if (container) {
+      new ProductViewer(container);
+    }
+  });
+</script>
