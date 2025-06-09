@@ -35,6 +35,22 @@ Ink is a sleek, responsive web application that demonstrates modern web developm
    npm run build
    ```
 
+## Deployment on Vercel
+
+This project is configured for seamless deployment on Vercel:
+
+1. Push your repository to GitHub
+2. Import your repository on [Vercel](https://vercel.com/new)
+3. Vercel will detect Astro and use the appropriate build settings automatically
+4. Click "Deploy"
+
+Alternatively, you can deploy directly from the CLI:
+
+```
+npm install -g vercel
+vercel
+```
+
 ## Project Structure
 
 ```

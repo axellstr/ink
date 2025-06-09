@@ -10,5 +10,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()]
+  },
+  output: 'static',  // Optimal for Vercel deployment
+  build: {
+    format: 'directory'
   }
 });
