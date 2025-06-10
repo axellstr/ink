@@ -20,14 +20,6 @@ A modern, full-featured e-commerce website built with Astro, featuring custom QR
    npm install
    ```
 
-2. **Set up Environment Variables**
-   
-   Edit the `.env` file and add your Stripe keys:
-   ```env
-   # Get these from your Stripe Dashboard: https://dashboard.stripe.com/apikeys
-   STRIPE_PUBLIC_KEY=pk_test_your_actual_publishable_key_here
-   STRIPE_SECRET_KEY=sk_test_your_actual_secret_key_here
-   ```
 
 3. **Run Development Server**
    ```bash
