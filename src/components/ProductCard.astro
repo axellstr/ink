@@ -14,7 +14,7 @@ interface Props {
 const { product } = Astro.props;
 ---
 
-<a href={`/product/${product.id}`} class="cursor-pointer group relative rounded-2xl  transition-all duration-300  p-4 block">
+<a href={`/product/${product.id}`} class="cursor-pointer group relative rounded-2xl   p-4 block">
   <!-- Featured Badge -->
   {product.featured && (
     <div class="absolute top-6 left-6 z-10">

@@ -1,0 +1,433 @@
+<div class="qr-code-section bg-bg/60 rounded-xl p-4 lg:p-6 border border-fg/10">
+  <!-- Mobile Toggle Header -->
+  <div class="flex items-center justify-between mb-4 lg:mb-4">
+    <button 
+      class="flex items-center gap-2 lg:pointer-events-none" 
+      id="qr-toggle-btn"
+    >
+      <svg class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+      </svg>
+      <h3 class="text-sm font-semibold text-fg">QR Code Preview</h3>
+      <svg class="w-4 h-4 text-fg/50 lg:hidden transition-transform duration-200" id="toggle-icon" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div class="qr-content  lg:block" id="qr-content">
+    <!-- URL Input Section -->
+    <div class="mb-4">
+      <h4 class="text-md font-medium text-fg mb-3 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+        Custom URL
+      </h4>
+      <div class="flex gap-2">
+        <div class="relative flex-1">
+          <input 
+            type="url" 
+            id="qr-url-input"
+            placeholder="https://your-website.com"
+            class="w-full px-3 py-2 lg:px-4 lg:py-3 pr-10 border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200 text-sm lg:text-base"
+          />
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="w-4 h-4 text-fg/30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+            </svg>
+          </div>
+        </div>
+        <button 
+          id="generate-qr-btn"
+          class="px-4 py-2 lg:px-6 lg:py-3 bg-primary text-bg rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200 flex items-center gap-2 whitespace-nowrap disabled:bg-fg/20 disabled:cursor-not-allowed text-sm lg:text-base"
+          disabled
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+          </svg>
+          Generate
+        </button>
+      </div>
+      <p class="text-xs lg:text-sm text-fg/60 mt-2">
+        Enter your custom URL to create a QR code that links directly to your content.
+      </p>
+    </div>
+
+    <!-- QR Code Display Area -->
+    <div class="relative mb-4">
+      <div class="w-48 h-48 lg:w-64 lg:h-64 mx-auto rounded-lg border-2 border-dashed border-fg/20 flex items-center justify-center" id="qr-display-area">
+        <!-- Default State -->
+        <div class="text-center" id="qr-placeholder">
+          <svg class="w-12 h-12 lg:w-16 lg:h-16 text-fg/20 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+          </svg>
+        </div>
+
+        <!-- Loading State -->
+        <div class="text-center hidden" id="qr-loading">
+          <div class="animate-spin w-8 h-8 lg:w-12 lg:h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+          <p class="text-fg/70 text-xs lg:text-sm">Validating URL...</p>
+        </div>
+
+        <!-- QR Code Canvas -->
+        <canvas id="qr-canvas" class="hidden max-w-full max-h-full"></canvas>
+
+        <!-- Error State -->
+        <div class="text-center hidden" id="qr-error">
+          <svg class="w-12 h-12 lg:w-16 lg:h-16 text-red-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <p class="text-red-400 text-xs lg:text-sm" id="error-message">Invalid or unsafe URL</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download Options -->
+    <div class="hidden" id="download-section">
+      <div class="mb-3">
+        <span class="text-sm font-medium text-fg">Download Options</span>
+      </div>
+      <div class="flex gap-2">
+        <button class="download-btn flex-1 px-3 py-2 bg-primary text-bg hover:bg-primary/90 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1" data-format="png">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          PNG
+        </button>
+        <button class="download-btn flex-1 px-3 py-2 bg-primary text-bg hover:bg-primary/90 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1" data-format="jpg">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          JPG
+        </button>
+        <button class="download-btn flex-1 px-3 py-2 bg-primary text-bg hover:bg-primary/90 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1" data-format="svg">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          SVG
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Import QR code library dynamically
+  import('qrcode').then(QRCode => {
+    let currentUrl = '';
+    let canvas: HTMLCanvasElement | null = null;
+    const QRLib = QRCode.default || QRCode;
+    
+    // Security patterns for URL validation - 100% FREE
+    const MALICIOUS_PATTERNS = [
+      /javascript:/i, /data:/i, /vbscript:/i, /file:/i, /ftp:/i,
+      /<script/i, /eval\(/i, /\.exe$/i, /\.bat$/i, /\.cmd$/i, /\.scr$/i,
+      /localhost/i, /127\.0\.0\.1/i, /0\.0\.0\.0/i, /::1/i
+    ];
+
+    const SUSPICIOUS_TLD = [
+      '.tk', '.ml', '.ga', '.cf', '.download', '.zip', '.exe'
+    ];
+
+    function init() {
+      canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
+      bindEvents();
+    }
+
+    function bindEvents() {
+      const urlInput = document.getElementById('qr-url-input') as HTMLInputElement;
+      const generateBtn = document.getElementById('generate-qr-btn') as HTMLButtonElement;
+      const toggleBtn = document.getElementById('qr-toggle-btn');
+      const qrContent = document.getElementById('qr-content');
+      const toggleIcon = document.getElementById('toggle-icon');
+
+      // Mobile toggle functionality
+      toggleBtn?.addEventListener('click', () => {
+        if (window.innerWidth < 1024) {
+          const isHidden = qrContent?.classList.contains('hidden');
+          if (isHidden) {
+            qrContent?.classList.remove('hidden');
+            toggleIcon?.classList.add('rotate-180');
+          } else {
+            qrContent?.classList.add('hidden');
+            toggleIcon?.classList.remove('rotate-180');
+          }
+        }
+      });
+
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+          qrContent?.classList.remove('hidden');
+          toggleIcon?.classList.remove('rotate-180');
+        }
+      });
+
+      // Enable/disable button based on input
+      urlInput?.addEventListener('input', () => {
+        const url = urlInput.value.trim();
+        if (generateBtn) {
+          generateBtn.disabled = !url;
+        }
+      });
+
+      // Generate QR code on button click
+      generateBtn?.addEventListener('click', () => {
+        const url = urlInput?.value.trim();
+        if (url) {
+          handleUrlSubmit(url);
+        }
+      });
+
+      // Download buttons
+      document.querySelectorAll('.download-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const button = (e.target as HTMLElement).closest('.download-btn') as HTMLElement;
+          const format = button?.dataset?.format;
+          if (format) {
+            downloadQRCode(format);
+          }
+        });
+      });
+
+      // Connect to product page custom URL input
+      document.addEventListener('qr-url-change', (event: Event) => {
+        const customEvent = event as CustomEvent<{ url: string }>;
+        if (urlInput) {
+          urlInput.value = customEvent.detail.url;
+          generateBtn.disabled = !customEvent.detail.url.trim();
+        }
+      });
+    }
+
+    async function handleUrlSubmit(url: string) {
+      setLoadingState();
+
+      try {
+        // Step 1: Basic URL format validation
+        if (!isValidUrlFormat(url)) {
+          throw new Error('Invalid URL format. Please use HTTP or HTTPS URLs.');
+        }
+
+        // Step 2: Security checks
+        if (!passesSecurityChecks(url)) {
+          throw new Error('URL contains potentially malicious content and was blocked for security.');
+        }
+
+        // Step 3: Advanced validation
+        const validatedUrl = await performAdvancedValidation(url);
+
+        // Step 4: Generate QR code
+        await generateQRCode(validatedUrl);
+        
+        setSuccessState(validatedUrl);
+
+      } catch (error: any) {
+        setErrorState(error.message || 'URL validation failed');
+      }
+    }
+
+    function isValidUrlFormat(url: string): boolean {
+      try {
+        const urlObj = new URL(url);
+        return ['http:', 'https:'].includes(urlObj.protocol);
+      } catch {
+        return false;
+      }
+    }
+
+    function passesSecurityChecks(url: string): boolean {
+      for (const pattern of MALICIOUS_PATTERNS) {
+        if (pattern.test(url)) {
+          return false;
+        }
+      }
+
+      for (const tld of SUSPICIOUS_TLD) {
+        if (url.toLowerCase().includes(tld)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function performAdvancedValidation(url: string): Promise<string> {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          try {
+            const urlObj = new URL(url);
+            
+            if (urlObj.hostname.length > 253) {
+              reject(new Error('Hostname too long (max 253 characters)'));
+              return;
+            }
+
+            if (urlObj.pathname.length > 2048) {
+              reject(new Error('URL path too long (max 2048 characters)'));
+              return;
+            }
+
+            const phishingPatterns = [
+              /paypal.*verify/i, /amazon.*security/i, /apple.*id.*suspend/i,
+              /microsoft.*account.*verify/i, /google.*security.*alert/i
+            ];
+
+            for (const pattern of phishingPatterns) {
+              if (pattern.test(url)) {
+                reject(new Error('URL resembles known phishing pattern and was blocked'));
+                return;
+              }
+            }
+
+            resolve(url);
+          } catch (error) {
+            reject(new Error('Advanced validation failed'));
+          }
+        }, 800);
+      });
+    }
+
+    async function generateQRCode(url: string): Promise<void> {
+      if (!canvas) {
+        throw new Error('Canvas not available');
+      }
+
+      try {
+        await QRLib.toCanvas(canvas, url, {
+          width: 200,
+          margin: 2,
+          color: { dark: '#000000', light: '#FFFFFF' },
+          errorCorrectionLevel: 'M'
+        });
+
+        currentUrl = url;
+      } catch (error) {
+        throw new Error('Failed to generate QR code');
+      }
+    }
+
+    function downloadQRCode(format: string): void {
+      if (!canvas || !currentUrl) return;
+
+      const link = document.createElement('a');
+      const filename = `qr-code-${Date.now()}`;
+
+      try {
+        switch (format.toLowerCase()) {
+          case 'png':
+            link.download = `${filename}.png`;
+            link.href = canvas.toDataURL('image/png');
+            break;
+          case 'jpg':
+            link.download = `${filename}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            break;
+          case 'svg':
+            downloadSVGQRCode(filename);
+            return;
+        }
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Download failed:', error);
+      }
+    }
+
+    async function downloadSVGQRCode(filename: string): Promise<void> {
+      try {
+        const svgString = await QRLib.toString(currentUrl, {
+          type: 'svg', width: 300, margin: 2,
+          color: { dark: '#000000', light: '#FFFFFF' }
+        });
+
+        const blob = new Blob([svgString], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.download = `${filename}.svg`;
+        link.href = url;
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('SVG download failed:', error);
+      }
+    }
+
+    function setLoadingState(): void {
+      hideAllStates();
+      document.getElementById('qr-loading')?.classList.remove('hidden');
+      updateStatus('validating', 'Validating URL...');
+    }
+
+    function setSuccessState(url: string): void {
+      hideAllStates();
+      document.getElementById('qr-canvas')?.classList.remove('hidden');
+      document.getElementById('download-section')?.classList.remove('hidden');
+      
+      updateStatus('success', 'QR code generated successfully');
+      
+      // Emit event to notify that QR code was generated successfully
+      const qrGeneratedEvent = new CustomEvent('qr-generated', {
+        detail: { url: url },
+        bubbles: true
+      });
+      document.dispatchEvent(qrGeneratedEvent);
+    }
+
+    function setErrorState(message: string): void {
+      hideAllStates();
+      document.getElementById('qr-error')?.classList.remove('hidden');
+      
+      const errorMessageEl = document.getElementById('error-message');
+      if (errorMessageEl) {
+        errorMessageEl.textContent = message;
+      }
+      
+      updateStatus('error', 'Validation failed');
+    }
+
+    function hideAllStates(): void {
+      const states = ['qr-placeholder', 'qr-loading', 'qr-canvas', 'qr-error', 'download-section'];
+      states.forEach(id => {
+        document.getElementById(id)?.classList.add('hidden');
+      });
+    }
+
+    function updateStatus(type: string, text: string): void {
+      const indicator = document.getElementById('status-indicator');
+      const statusText = document.getElementById('status-text');
+      
+      if (indicator && statusText) {
+        indicator.className = 'w-2 h-2 rounded-full';
+        
+        switch (type) {
+          case 'default': indicator.classList.add('bg-fg/30'); break;
+          case 'validating': indicator.classList.add('bg-yellow-400', 'animate-pulse'); break;
+          case 'success': indicator.classList.add('bg-green-400'); break;
+          case 'error': indicator.classList.add('bg-red-400'); break;
+        }
+        
+        statusText.textContent = text;
+      }
+    }
+
+    // Initialize QR system when DOM is loaded
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  }).catch(error => {
+    console.error('Failed to load QR code library:', error);
+  });
+</script>

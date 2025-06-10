@@ -5,7 +5,7 @@ export const products = [
     image: "/M1.png",
     title: "Your Journey Starts here",
     description: "Progress isn't a destination- it's a motion, it's mindset, it's you.",
-    price: "$24.99",
+    price: "$22.99",
     category: "minimal",
     featured: true,
     images: ["/M1.png", "/M2.png", "/M3.png", "/M1.png"] // Multiple product images

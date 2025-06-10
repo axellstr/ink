@@ -4,7 +4,7 @@
 :root {
   --color-bg: #F8F8F8;     /* Light gray (Seasalt) */
   --color-fg: #2b2424;     /* Dark gray (Eerie Black) */
-  --color-primary: #5A0DAD; /* Bright chartreuse */
+  --color-primary: #5500af; /* Bright chartreuse */
   --color-secondary: #DCFF00; /* Purple (Grape) */
   --color-bg-muted: #bebebe;
 }

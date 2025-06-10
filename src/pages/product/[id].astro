@@ -3,6 +3,7 @@ import '../../styles/global.css';
 import Navbar from '../../components/Navbar.astro';
 import Footer from '../../components/Footer.astro';
 import ShoppingCart from '../../components/ShoppingCart.astro';
+import QRCodeGenerator from '../../components/QRCodeGenerator.astro';
 import { products } from '../../data/products.js';
 
 // Generate static paths for all products
@@ -74,29 +75,31 @@ const colors = [
         </div>
 
         <!-- Product Details Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          <!-- Product Images -->
-          <div class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16">
+          <!-- Left Column: Product Images & QR Code -->
+          <div class="space-y-6 flex flex-col">
+            <!-- Product Images -->
+            <div class="space-y-4">
             <!-- Main Image -->
-            <div class="aspect-square bg-bg/60 rounded-2xl overflow-hidden relative">
+            <div class="aspect-square bg-bg/60 rounded-2xl overflow-hidden relative" id="image-container">
               <img 
                 id="main-image"
                 src={product.image} 
                 alt={product.title}
                 class="h-full w-full object-cover"
               />
-              <!-- Front View Badge -->
-              <div class="absolute top-4 left-4">
-                <span class="inline-flex items-center rounded-full bg-bg/90 px-3 py-1 text-xs font-medium text-fg">
-                  Front View
-                </span>
+              <!-- Magnifying Lens -->
+              <div id="magnifying-lens" class="absolute pointer-events-none opacity-0 transition-opacity duration-200 ease-out">
+                <div class="w-[200px] h-[200px] rounded-sm border-1 border-primary/10backdrop-blur-md shadow-2xl overflow-hidden">
+                  <img 
+                    id="lens-image"
+                    src={product.image} 
+                    alt="Magnified view"
+                    class="w-full h-full object-cover origin-center"
+                  />
+                </div>
               </div>
-              <!-- QR Code Badge -->
-              <div class="absolute bottom-4 right-4">
-                <span class="inline-flex items-center rounded-lg bg-bg/90 px-3 py-2 text-xs font-medium text-fg">
-                  📱 QR Code Embedded
-                </span>
-              </div>
+
             </div>
 
             <!-- Thumbnail Images -->
@@ -114,10 +117,16 @@ const colors = [
                 </button>
               ))}
             </div>
+            </div>
+
+            <!-- QR Code Generator Section -->
+            <div class="flex-grow">
+              <QRCodeGenerator />
+            </div>
           </div>
 
-          <!-- Product Information -->
-          <div class="space-y-8">
+          <!-- Right Column: Product Information -->
+          <div class="space-y-6 lg:space-y-8 flex flex-col">
             <!-- Product Header -->
             <div>
               <h1 class="text-4xl font-bold text-fg mb-4">{product.title}</h1>
@@ -220,6 +229,7 @@ const colors = [
               <div class="relative">
                 <input 
                   type="url" 
+                  id="custom-url-input"
                   placeholder="https://your-website.com"
                   class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
                 />
@@ -277,13 +287,25 @@ const colors = [
                   <span class="text-fg/70">Size:</span>
                   <span class="text-primary font-medium" id="selected-size">M</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex justify-between items-center">
                   <span class="text-fg/70">Color:</span>
-                  <span class="text-primary font-medium" id="selected-color">Black</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-4 h-4 rounded border border-fg/20 bg-black" id="selected-color-box"></div>
+                    <span class="text-primary font-medium" id="selected-color">Black</span>
+                  </div>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-fg/70">Quality:</span>
                   <span class="text-primary font-medium" id="selected-quality">Standard</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-fg/70">Custom URL:</span>
+                  <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                    <svg class="w-4 h-4 text-primary flex-shrink-0" id="custom-url-icon" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                    <a href="#" id="selected-custom-url" class="text-primary font-medium hover:text-primary/80 transition-colors duration-200 underline decoration-dotted underline-offset-2 truncate max-w-[140px]" target="_blank" rel="noopener noreferrer" title="Click to open URL">Default</a>
+                  </div>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-fg/70">Quantity:</span>
@@ -293,7 +315,7 @@ const colors = [
             </div>
 
             <!-- Action Buttons -->
-            <div class="space-y-4">
+            <div class="space-y-4 mt-auto pt-6">
               <button id="add-to-cart-btn" 
                       class="w-full bg-primary text-bg py-4 px-6 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2"
                       data-product-id={product.id}
@@ -305,9 +327,6 @@ const colors = [
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
                 Add to Cart
-              </button>
-              <button class="w-full bg-fg text-bg py-4 px-6 rounded-lg font-semibold text-lg hover:bg-fg/90 transition-colors duration-200">
-                Buy Now
               </button>
             </div>
           </div>
@@ -321,13 +340,64 @@ const colors = [
     <!-- JavaScript for interactivity -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
+        // Magnifying lens functionality
+        const imageContainer = document.getElementById('image-container');
+        const mainImage = document.getElementById('main-image') as HTMLImageElement;
+        const magnifyingLens = document.getElementById('magnifying-lens');
+        const lensImage = document.getElementById('lens-image') as HTMLImageElement;
+        
+        if (imageContainer && mainImage && magnifyingLens && lensImage) {
+          const lensSize = 200; // 200px
+          const zoomLevel = 5.5;
+          
+          imageContainer.addEventListener('mouseenter', function() {
+            magnifyingLens.style.opacity = '1';
+          });
+          
+          imageContainer.addEventListener('mouseleave', function() {
+            magnifyingLens.style.opacity = '0';
+          });
+          
+          imageContainer.addEventListener('mousemove', function(e) {
+            const rect = imageContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Position the lens centered on the cursor
+            const lensX = x - lensSize / 2;
+            const lensY = y - lensSize / 2;
+            
+            // Keep lens within image bounds
+            const boundedLensX = Math.max(0, Math.min(lensX, rect.width - lensSize));
+            const boundedLensY = Math.max(0, Math.min(lensY, rect.height - lensSize));
+            
+            magnifyingLens.style.left = `${boundedLensX}px`;
+            magnifyingLens.style.top = `${boundedLensY}px`;
+            
+            // Calculate the position for the magnified image
+            const imageX = (x / rect.width) * 100;
+            const imageY = (y / rect.height) * 100;
+            
+            // Position the magnified image inside the lens
+            lensImage.style.transformOrigin = `${imageX}% ${imageY}%`;
+            lensImage.style.transform = `scale(${zoomLevel})`;
+          });
+        }
+
         // Thumbnail functionality
         document.querySelectorAll('.thumbnail-btn').forEach(button => {
           button.addEventListener('click', function(this: HTMLElement) {
             const newImage = this.dataset.image;
             const mainImage = document.getElementById('main-image') as HTMLImageElement;
+            const lensImage = document.getElementById('lens-image') as HTMLImageElement;
+            
             if (mainImage && newImage) {
               mainImage.src = newImage;
+            }
+            
+            // Update lens image as well
+            if (lensImage && newImage) {
+              lensImage.src = newImage;
             }
             
             // Update active thumbnail
@@ -376,8 +446,33 @@ const colors = [
             `;
             
             const selectedColorEl = document.getElementById('selected-color');
+            const selectedColorBoxEl = document.getElementById('selected-color-box');
             if (selectedColorEl && this.title) {
               selectedColorEl.textContent = this.title;
+            }
+            
+            // Update color box indicator
+            if (selectedColorBoxEl) {
+              // Remove all color classes
+              selectedColorBoxEl.className = 'w-4 h-4 rounded border border-fg/20';
+              // Add the appropriate color class based on selection
+              const colorValue = this.dataset.color;
+              switch(colorValue) {
+                case 'white':
+                  selectedColorBoxEl.classList.add('bg-white');
+                  break;
+                case 'black':
+                  selectedColorBoxEl.classList.add('bg-black');
+                  break;
+                case 'navy':
+                  selectedColorBoxEl.classList.add('bg-blue-900');
+                  break;
+                case 'gray':
+                  selectedColorBoxEl.classList.add('bg-gray-500');
+                  break;
+                default:
+                  selectedColorBoxEl.classList.add('bg-black');
+              }
             }
           });
         });
@@ -431,6 +526,53 @@ const colors = [
           radio.addEventListener('change', updatePrice);
         });
 
+        // Custom URL input listener
+        const customUrlInput = document.getElementById('custom-url-input') as HTMLInputElement;
+        const selectedCustomUrlEl = document.getElementById('selected-custom-url') as HTMLAnchorElement;
+        
+        function updateCustomUrlDisplay() {
+          if (selectedCustomUrlEl) {
+            const urlValue = customUrlInput?.value.trim();
+            if (urlValue && urlValue.length > 0) {
+              // Show truncated URL if too long
+              const truncatedUrl = urlValue.length > 20 ? urlValue.substring(0, 20) + '...' : urlValue;
+              selectedCustomUrlEl.textContent = truncatedUrl;
+              selectedCustomUrlEl.href = urlValue;
+              selectedCustomUrlEl.title = `Click to open: ${urlValue}`;
+              selectedCustomUrlEl.classList.remove('pointer-events-none');
+              selectedCustomUrlEl.classList.add('hover:text-primary/80');
+            } else {
+              selectedCustomUrlEl.textContent = 'Default';
+              selectedCustomUrlEl.href = '#';
+              selectedCustomUrlEl.title = 'No custom URL set';
+              selectedCustomUrlEl.classList.add('pointer-events-none');
+              selectedCustomUrlEl.classList.remove('hover:text-primary/80');
+            }
+          }
+        }
+
+        customUrlInput?.addEventListener('input', updateCustomUrlDisplay);
+        customUrlInput?.addEventListener('blur', updateCustomUrlDisplay);
+
+        // Connect custom URL input to QR code generator
+        customUrlInput?.addEventListener('input', function() {
+          const url = this.value.trim();
+          const qrUrlChangeEvent = new CustomEvent('qr-url-change', {
+            detail: { url: url },
+            bubbles: true
+          });
+          document.dispatchEvent(qrUrlChangeEvent);
+        });
+
+        // Listen for QR code generation success to update custom URL selection
+        document.addEventListener('qr-generated', function(event: any) {
+          const generatedUrl = event.detail.url;
+          if (customUrlInput && generatedUrl) {
+            customUrlInput.value = generatedUrl;
+            updateCustomUrlDisplay();
+          }
+        });
+
         // Add to cart functionality
       const addToCartBtn = document.getElementById('add-to-cart-btn');
       if (addToCartBtn) {
@@ -447,12 +589,15 @@ const colors = [
           const selectedSizeEl = document.querySelector('.size-btn.border-primary') as HTMLElement;
           const selectedColorEl = document.querySelector('.color-btn.border-primary') as HTMLElement;
           const quantityInput = document.getElementById('quantity-input') as HTMLInputElement;
+          const customUrlInput = document.getElementById('custom-url-input') as HTMLInputElement;
           const priceEl = document.getElementById('current-price');
           
           const selectedSize = selectedSizeEl?.dataset.size || 'M';
           const selectedColor = selectedColorEl?.title || 'Black';
+          const selectedColorValue = selectedColorEl?.dataset.color || 'black';
           const quantity = parseInt(quantityInput?.value || '1');
           const currentPrice = priceEl?.textContent || productPrice;
+          const customUrl = customUrlInput?.value.trim() || '';
 
           // Create product data for cart
           const productData = {
@@ -463,7 +608,9 @@ const colors = [
             category: productCategory || '',
             size: selectedSize,
             color: selectedColor,
-            quality: selectedQuality?.value || 'standard'
+            colorValue: selectedColorValue,
+            quality: selectedQuality?.value || 'standard',
+            customUrl: customUrl
           };
 
           // Add multiple items if quantity > 1

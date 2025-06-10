@@ -3,7 +3,7 @@
 ---
 
 <!-- Shopping Cart Drawer -->
-<div class="fixed top-0 right-0 h-full w-96 sm:w-[28rem] bg-bg shadow-2xl z-[1001] transform translate-x-full transition-transform duration-500 ease-in-out" id="cart-drawer">
+<div class="fixed top-0 right-0 h-full w-96 sm:w-[28rem] bg-bg shadow-2xl z-[1001] transform translate-x-full transition-transform duration-500 ease-in-out flex flex-col" id="cart-drawer">
   <div class="flex items-center justify-between p-6 border-b border-fg/10">
     <h2 class="text-2xl font-semibold text-fg">Your Cart</h2>
     <button class="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-fg/10 transition-colors duration-200 text-fg" id="cart-close" aria-label="Close shopping cart">
@@ -13,7 +13,7 @@
     </button>
   </div>
 
-  <div class="flex-1 overflow-y-auto p-6">
+  <div class="flex-1 overflow-y-auto">
     <!-- Empty Cart State -->
     <div class="flex flex-col items-center justify-center h-full text-center py-16" id="cart-empty">
       <div class="mb-6 text-fg/40">
@@ -30,15 +30,15 @@
 
     <!-- Cart Items -->
     <div class="hidden" id="cart-items">
-      <div class="space-y-6" id="cart-items-list">
+      <div class="space-y-1" id="cart-items-list">
         <!-- Cart items will be dynamically inserted here -->
       </div>
     </div>
   </div>
 
   <!-- Cart Footer -->
-  <div class="hidden border-t border-fg/10 p-6 bg-bg" id="cart-footer">
-    <div class="space-y-4 mb-6">
+  <div class="hidden border-t border-fg/10 p-2 bg-bg flex flex-col h-auto mt-auto" id="cart-footer">
+    <div class="space-y-4 flex-grow">
       <div class="flex justify-between text-base">
         <span class="text-fg/70">Subtotal:</span>
         <span class="font-medium text-fg" id="cart-subtotal">$0.00</span>
@@ -47,14 +47,16 @@
         <span class="text-fg/70">Shipping:</span>
         <span class="font-medium text-primary">Free</span>
       </div>
-      <div class="flex justify-between text-xl font-semibold border-t border-fg/10 pt-4">
+    </div>
+    <div class="mt-auto pt-4">
+      <div class="flex justify-between text-xl font-semibold border-t border-fg/10 pt-4 mb-6">
         <span class="text-fg">Total:</span>
         <span class="text-primary" id="cart-total">$0.00</span>
       </div>
+      <button class="w-full bg-primary text-bg py-4 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200" id="checkout-btn">
+        Proceed to Checkout
+      </button>
     </div>
-    <button class="w-full bg-primary text-bg py-4 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200" id="checkout-btn">
-      Proceed to Checkout
-    </button>
   </div>
 </div>
 
@@ -72,7 +74,9 @@
     category: string;
     size?: string;
     color?: string;
+    colorValue?: string;
     quality?: string;
+    customUrl?: string;
   }
 
   class ShoppingCart {
@@ -139,7 +143,14 @@
     }
 
     public addItem(product: Omit<CartItem, 'quantity'>) {
-      const existingItem = this.items.find(item => item.id === product.id);
+      // Check for existing item with same configuration (id, size, color, quality, customUrl)
+      const existingItem = this.items.find(item => 
+        item.id === product.id &&
+        item.size === product.size &&
+        item.color === product.color &&
+        item.quality === product.quality &&
+        item.customUrl === product.customUrl
+      );
       
       if (existingItem) {
         existingItem.quantity += 1;
@@ -217,8 +228,22 @@
     private renderCartItem(item: CartItem): string {
       const itemTotal = (parseFloat(item.price.replace('$', '')) * item.quantity).toFixed(2);
       
+      // Generate color box class based on colorValue
+      const getColorClass = (colorValue: string) => {
+        switch(colorValue) {
+          case 'white': return 'bg-white border-gray-300';
+          case 'black': return 'bg-black';
+          case 'navy': return 'bg-blue-900';
+          case 'gray': return 'bg-gray-500';
+          default: return 'bg-black';
+        }
+      };
+      
+      const colorClass = getColorClass(item.colorValue || 'black');
+      const hasCustomUrl = item.customUrl && item.customUrl.trim().length > 0;
+      
       return `
-        <div class="flex gap-5 p-5 bg-bg/50 rounded-xl border border-fg/10" data-id="${item.id}">
+        <div class="flex gap-5 p-5 bg-bg/50" data-id="${item.id}">
           <div class="w-20 h-20 flex-shrink-0">
             <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover rounded-xl" />
           </div>
@@ -227,12 +252,24 @@
             
             <!-- Product Details -->
             <div class="mb-3">
-              <div class="flex items-center gap-2 text-sm text-fg/70">
-                <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${(item as any).size || 'L'}</span>
+              <div class="flex items-center gap-2 text-sm text-fg/70 flex-wrap">
+                <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${item.size || 'L'}</span>
                 <span class="text-fg/40">/</span>
-                <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${(item as any).color || 'Black'}</span>
+                <div class="flex items-center gap-1">
+                  <div class="w-3 h-3 rounded border ${colorClass}"></div>
+                  <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${item.color || 'Black'}</span>
+                </div>
                 <span class="text-fg/40">/</span>
-                <span class="bg-primary/10 px-2 py-0.5 rounded text-primary font-medium capitalize">${(item as any).quality || 'Premium'}</span>
+                <span class="bg-primary/10 px-2 py-0.5 rounded text-primary font-medium capitalize">${item.quality || 'Premium'}</span>
+                ${hasCustomUrl ? `
+                  <span class="text-fg/40">/</span>
+                  <div class="flex items-center gap-1">
+                    <svg class="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                    </svg>
+                    <span class="bg-primary/10 px-2 py-0.5 rounded text-primary font-medium text-xs">Custom</span>
+                  </div>
+                ` : ''}
               </div>
             </div>
             

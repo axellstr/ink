@@ -117,11 +117,6 @@
   color: rgba(248, 248, 248, 0.7); /* Muted foreground for dark mode */
 }
 
-.theme-toggle:hover {
-  background-color: rgba(90, 13, 173, 0.1); /* Accent background */
-  color: var(--color-fg);
-  transform: scale(1.05);
-}
 
 .theme-icon-container {
   position: relative;
@@ -162,10 +157,7 @@ html.light .sun-icon {
   transform: rotate(0deg) scale(1);
 }
 
-/* Add a subtle glow effect on hover */
-.theme-toggle:hover .theme-icon {
-  filter: drop-shadow(0 0 8px rgba(90, 13, 173, 0.3));
-}
+
 
 /* Cart Button */
 .cart-button {
@@ -188,14 +180,11 @@ html.light .sun-icon {
 }
 
 .cart-button:hover {
-  background-color: rgba(90, 13, 173, 0.1); /* Accent background */
-  color: var(--color-fg);
   transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
 }
 
-.cart-button:hover .cart-icon {
-  filter: drop-shadow(0 0 8px rgba(90, 13, 173, 0.3));
-}
+
 
 .cart-icon {
   width: 20px;
