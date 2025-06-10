@@ -1,0 +1,932 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Checkout - Premium T-Shirts</title>
+  </head>
+  <body class="bg-bg text-fg transition-colors duration-500">
+    <Navbar />
+    
+    <!-- Main Checkout Content -->
+    <main class="relative isolate px-6 pt-24 pb-16 sm:pt-32 lg:px-8">
+      <!-- Background decoration -->
+      <div class="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl" aria-hidden="true">
+        <div class="mx-auto aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-secondary/20 to-primary/20 opacity-30" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      </div>
+
+      <!-- Loading Overlay -->
+      <div id="checkout-loading" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden">
+        <div class="bg-bg rounded-lg p-8 flex flex-col items-center gap-4">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <p class="text-fg text-lg">Loading your cart...</p>
+        </div>
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="empty-cart-state" class="hidden">
+        <div class="mx-auto max-w-2xl text-center">
+          <div class="mb-8">
+            <svg class="mx-auto h-24 w-24 text-fg/30" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-fg mb-4">Your cart is empty</h1>
+          <p class="text-lg text-fg/70 mb-8">Add some items to your cart before proceeding to checkout.</p>
+          <a href="/shop" class="inline-flex items-center gap-2 bg-primary text-bg px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors duration-200">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            Continue Shopping
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Checkout Content -->
+      <div id="checkout-content" class="hidden">
+        <div class="mx-auto max-w-7xl">
+          <!-- Page Header -->
+          <div class="mb-8">
+            <div class="flex items-center gap-4 mb-4">
+              <a href="/shop" class="inline-flex items-center gap-2 text-fg/70 hover:text-primary transition-colors duration-200">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                Back to Shop
+              </a>
+            </div>
+            <h1 class="text-4xl font-bold text-fg mb-2">Checkout</h1>
+            <p class="text-lg text-fg/70">Complete your order below</p>
+          </div>
+
+          <!-- Checkout Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <!-- Left Column: Forms -->
+            <div class="space-y-8">
+
+
+              <!-- Customer Information Form -->
+              <form id="checkout-form" class="space-y-6">
+                <!-- Contact Information -->
+                <div class="bg-bg/60 rounded-lg p-6 border border-fg/10">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-fg flex items-center gap-2">
+                      <span class="w-2 h-2 bg-primary rounded-full"></span>
+                      Contact Information
+                    </h3>
+                    <button type="button" id="auto-fill-contact" class="text-xs px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors duration-200">
+                      Auto-fill Demo
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label for="first-name" class="block text-sm font-medium text-fg mb-2">First Name</label>
+                      <input 
+                        type="text" 
+                        id="first-name" 
+                        name="firstName"
+                        required
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label for="last-name" class="block text-sm font-medium text-fg mb-2">Last Name</label>
+                      <input 
+                        type="text" 
+                        id="last-name" 
+                        name="lastName"
+                        required
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <label for="email" class="block text-sm font-medium text-fg mb-2">Email Address</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email"
+                      required
+                      class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                      placeholder="john.doe@example.com"
+                    />
+                  </div>
+                  <div class="mt-4">
+                    <label for="phone" class="block text-sm font-medium text-fg mb-2">Phone Number</label>
+                    <input 
+                      type="tel" 
+                      id="phone" 
+                      name="phone"
+                      required
+                      class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                      placeholder="+1 (555) 123-4567"
+                    />
+                  </div>
+                </div>
+
+                <!-- Billing Address -->
+                <div class="bg-bg/60 rounded-lg p-6 border border-fg/10">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-fg flex items-center gap-2">
+                      <span class="w-2 h-2 bg-primary rounded-full"></span>
+                      Billing Address
+                    </h3>
+                    <button type="button" id="auto-fill-billing" class="text-xs px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors duration-200">
+                      Auto-fill Demo
+                    </button>
+                  </div>
+                  <div class="space-y-4">
+                    <div>
+                      <label for="billing-address" class="block text-sm font-medium text-fg mb-2">Street Address</label>
+                      <input 
+                        type="text" 
+                        id="billing-address" 
+                        name="billingAddress"
+                        required
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                        placeholder="123 Main Street"
+                      />
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label for="billing-city" class="block text-sm font-medium text-fg mb-2">City</label>
+                        <input 
+                          type="text" 
+                          id="billing-city" 
+                          name="billingCity"
+                          required
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="New York"
+                        />
+                      </div>
+                      <div>
+                        <label for="billing-state" class="block text-sm font-medium text-fg mb-2">State</label>
+                        <input 
+                          type="text" 
+                          id="billing-state" 
+                          name="billingState"
+                          required
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="NY"
+                        />
+                      </div>
+                      <div>
+                        <label for="billing-zip" class="block text-sm font-medium text-fg mb-2">ZIP Code</label>
+                        <input 
+                          type="text" 
+                          id="billing-zip" 
+                          name="billingZip"
+                          required
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="10001"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label for="billing-country" class="block text-sm font-medium text-fg mb-2">Country</label>
+                      <select 
+                        id="billing-country" 
+                        name="billingCountry"
+                        required
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                      >
+                        <option value="">Select Country</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="IT">Italy</option>
+                        <option value="ES">Spain</option>
+                        <option value="NL">Netherlands</option>
+                        <option value="SE">Sweden</option>
+                        <option value="NO">Norway</option>
+                        <option value="DK">Denmark</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Shipping Address -->
+                <div class="bg-bg/60 rounded-lg p-6 border border-fg/10">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-fg flex items-center gap-2">
+                      <span class="w-2 h-2 bg-primary rounded-full"></span>
+                      Shipping Address
+                    </h3>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        id="same-as-billing"
+                        class="w-4 h-4 text-primary border-fg/30 rounded focus:ring-primary"
+                        checked
+                      />
+                      <span class="text-sm text-fg/70">Same as billing</span>
+                    </label>
+                  </div>
+                  
+                  <div id="shipping-fields" class="space-y-4 hidden">
+                    <div>
+                      <label for="shipping-address" class="block text-sm font-medium text-fg mb-2">Street Address</label>
+                      <input 
+                        type="text" 
+                        id="shipping-address" 
+                        name="shippingAddress"
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                        placeholder="123 Main Street"
+                      />
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div>
+                        <label for="shipping-city" class="block text-sm font-medium text-fg mb-2">City</label>
+                        <input 
+                          type="text" 
+                          id="shipping-city" 
+                          name="shippingCity"
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="New York"
+                        />
+                      </div>
+                      <div>
+                        <label for="shipping-state" class="block text-sm font-medium text-fg mb-2">State</label>
+                        <input 
+                          type="text" 
+                          id="shipping-state" 
+                          name="shippingState"
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="NY"
+                        />
+                      </div>
+                      <div>
+                        <label for="shipping-zip" class="block text-sm font-medium text-fg mb-2">ZIP Code</label>
+                        <input 
+                          type="text" 
+                          id="shipping-zip" 
+                          name="shippingZip"
+                          class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                          placeholder="10001"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label for="shipping-country" class="block text-sm font-medium text-fg mb-2">Country</label>
+                      <select 
+                        id="shipping-country" 
+                        name="shippingCountry"
+                        class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                      >
+                        <option value="">Select Country</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="IT">Italy</option>
+                        <option value="ES">Spain</option>
+                        <option value="NL">Netherlands</option>
+                        <option value="SE">Sweden</option>
+                        <option value="NO">Norway</option>
+                        <option value="DK">Denmark</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Special Instructions -->
+                <div class="bg-bg/60 rounded-lg p-6 border border-fg/10">
+                  <h3 class="text-lg font-semibold text-fg mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-primary rounded-full"></span>
+                    Special Instructions
+                    <span class="text-sm text-fg/50 font-normal">(Optional)</span>
+                  </h3>
+                  <textarea 
+                    id="special-instructions" 
+                    name="specialInstructions"
+                    rows="3"
+                    class="w-full px-4 py-3 bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200 resize-none"
+                    placeholder="Any special requests or delivery instructions..."
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right Column: Order Summary -->
+            <div class="lg:sticky lg:top-8 lg:self-start">
+              <div class="bg-bg/60 rounded-lg p-6 border border-fg/10">
+                <h3 class="text-xl font-semibold text-fg mb-6 flex items-center gap-2">
+                  <span class="w-2 h-2 bg-primary rounded-full"></span>
+                  Order Summary
+                </h3>
+
+                <!-- Cart Items -->
+                <div class="space-y-4 mb-6" id="checkout-cart-items">
+                  <!-- Items will be populated by JavaScript -->
+                </div>
+
+                <!-- Discount Code Section -->
+                <div class="border-t border-fg/10 pt-6 mb-6">
+                  <h4 class="text-sm font-semibold text-fg mb-3">Discount Code</h4>
+                  <div class="flex gap-2">
+                    <input 
+                      type="text" 
+                      id="discount-code"
+                      placeholder="Enter discount code"
+                      class="flex-1 px-3 py-2 text-sm bg-bg border border-fg/20 rounded-lg text-fg placeholder-fg/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors duration-200"
+                    />
+                    <button 
+                      type="button" 
+                      id="apply-discount"
+                      class="px-4 py-2 text-sm bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary/20 transition-colors duration-200 font-medium"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  <div id="discount-message" class="mt-2 text-sm hidden"></div>
+                </div>
+
+                <!-- Order Totals -->
+                <div class="border-t border-fg/10 pt-6 space-y-3">
+                  <div class="flex justify-between text-base">
+                    <span class="text-fg/70">Subtotal (<span id="total-items">0</span> items):</span>
+                    <span class="font-medium text-fg" id="checkout-subtotal">$0.00</span>
+                  </div>
+                  <div id="discount-row" class="hidden flex justify-between text-base">
+                    <span class="text-fg/70">Discount (<span id="discount-code-display"></span>):</span>
+                    <span class="font-medium text-green-500" id="discount-amount">-$0.00</span>
+                  </div>
+                  <div class="flex justify-between text-base">
+                    <span class="text-fg/70">Shipping:</span>
+                    <span class="font-medium text-primary">Free</span>
+                  </div>
+                  <!-- Tax row removed - no tax charged -->
+                  <div class="flex justify-between text-xl font-semibold border-t border-fg/10 pt-3">
+                    <span class="text-fg">Total:</span>
+                    <span class="text-primary" id="checkout-total">$0.00</span>
+                  </div>
+                </div>
+
+                <!-- Checkout Button -->
+                <button 
+                  type="button"
+                  id="proceed-to-payment"
+                  class="w-full bg-primary text-bg py-4 px-6 rounded-lg font-semibold text-lg hover:bg-primary/90 transition-colors duration-200 flex items-center justify-center gap-2 mt-6"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                  </svg>
+                  Proceed to Payment
+                </button>
+
+                <!-- Security Badges -->
+                <div class="mt-6 pt-6 border-t border-fg/10">
+                  <p class="text-sm text-fg/70 text-center mb-3">Secure checkout powered by</p>
+                  <div class="flex items-center justify-center gap-4">
+                    <div class="bg-fg/10 px-3 py-1 rounded text-sm font-medium text-fg">
+                      🔒 SSL Encrypted
+                    </div>
+                    <div class="bg-fg/10 px-3 py-1 rounded text-sm font-medium text-fg">
+                      Stripe
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+
+    <!-- JavaScript for checkout functionality -->
+    <script>
+      interface CartItem {
+        id: number;
+        title: string;
+        price: string;
+        image: string;
+        quantity: number;
+        category: string;
+        size?: string;
+        color?: string;
+        colorValue?: string;
+        quality?: string;
+        customUrl?: string;
+      }
+
+      interface CheckoutData {
+        customer: {
+          firstName: string;
+          lastName: string;
+          email: string;
+          phone: string;
+        };
+        billing: {
+          address: string;
+          city: string;
+          state: string;
+          zip: string;
+          country: string;
+        };
+        shipping: {
+          address: string;
+          city: string;
+          state: string;
+          zip: string;
+          country: string;
+          sameAsBilling: boolean;
+        };
+        specialInstructions?: string;
+        items: CartItem[];
+        totals: {
+          subtotal: number;
+          discount: number;
+          discountCode: string;
+          tax: number;
+          shipping: number;
+          total: number;
+        };
+      }
+
+      class CheckoutManager {
+        private cartItems: CartItem[] = [];
+        // No tax - removed tax calculation
+        private discountRate: number = 0;
+        private discountCode: string = '';
+        
+        constructor() {
+          this.init();
+        }
+
+        private init() {
+          this.showLoading();
+          this.loadCartData();
+          this.bindEvents();
+          this.hideLoading();
+        }
+
+        private showLoading() {
+          document.getElementById('checkout-loading')?.classList.remove('hidden');
+        }
+
+        private hideLoading() {
+          document.getElementById('checkout-loading')?.classList.add('hidden');
+        }
+
+        private loadCartData() {
+          const saved = localStorage.getItem('shopping-cart');
+          if (saved) {
+            try {
+              this.cartItems = JSON.parse(saved);
+            } catch (e) {
+              this.cartItems = [];
+            }
+          }
+
+          if (this.cartItems.length === 0) {
+            this.showEmptyCartState();
+          } else {
+            this.showCheckoutContent();
+            this.renderCartItems();
+            this.updateOrderSummary();
+          }
+        }
+
+        private showEmptyCartState() {
+          document.getElementById('empty-cart-state')?.classList.remove('hidden');
+          document.getElementById('checkout-content')?.classList.add('hidden');
+        }
+
+        private showCheckoutContent() {
+          document.getElementById('empty-cart-state')?.classList.add('hidden');
+          document.getElementById('checkout-content')?.classList.remove('hidden');
+        }
+
+        private bindEvents() {
+          // Same as billing checkbox
+          const sameAsBillingCheckbox = document.getElementById('same-as-billing') as HTMLInputElement;
+          const shippingFields = document.getElementById('shipping-fields');
+          
+          sameAsBillingCheckbox?.addEventListener('change', function() {
+            if (this.checked) {
+              shippingFields?.classList.add('hidden');
+              // Remove required attribute from shipping fields
+              shippingFields?.querySelectorAll('input, select').forEach(field => {
+                (field as HTMLInputElement).removeAttribute('required');
+              });
+            } else {
+              shippingFields?.classList.remove('hidden');
+              // Add required attribute to shipping fields
+              shippingFields?.querySelectorAll('input[name^="shipping"], select[name^="shipping"]').forEach(field => {
+                (field as HTMLInputElement).setAttribute('required', '');
+              });
+            }
+          });
+
+          // Proceed to payment button
+          const proceedButton = document.getElementById('proceed-to-payment');
+          proceedButton?.addEventListener('click', () => this.handleProceedToPayment());
+
+          // Form validation on input
+          const form = document.getElementById('checkout-form') as HTMLFormElement;
+          form?.addEventListener('input', () => this.validateForm());
+
+          // Discount code functionality
+          const applyDiscountBtn = document.getElementById('apply-discount');
+          const discountCodeInput = document.getElementById('discount-code') as HTMLInputElement;
+          applyDiscountBtn?.addEventListener('click', () => this.applyDiscountCode());
+          discountCodeInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              this.applyDiscountCode();
+            }
+          });
+
+          // Auto-fill functionality
+          const autoFillContactBtn = document.getElementById('auto-fill-contact');
+          const autoFillBillingBtn = document.getElementById('auto-fill-billing');
+          autoFillContactBtn?.addEventListener('click', () => this.autoFillContact());
+          autoFillBillingBtn?.addEventListener('click', () => this.autoFillBilling());
+        }
+
+        private renderCartItems() {
+          const container = document.getElementById('checkout-cart-items');
+          if (!container) return;
+
+          container.innerHTML = this.cartItems.map(item => this.renderCartItem(item)).join('');
+        }
+
+        private renderCartItem(item: CartItem): string {
+          const itemTotal = (parseFloat(item.price.replace('$', '')) * item.quantity).toFixed(2);
+          
+          const getColorClass = (colorValue: string) => {
+            switch(colorValue) {
+              case 'white': return 'bg-white border-gray-300';
+              case 'black': return 'bg-black';
+              case 'navy': return 'bg-blue-900';
+              case 'gray': return 'bg-gray-500';
+              default: return 'bg-black';
+            }
+          };
+          
+          const colorClass = getColorClass(item.colorValue || 'black');
+          const hasCustomUrl = item.customUrl && item.customUrl.trim().length > 0;
+          
+          return `
+            <div class="flex gap-4 p-4 bg-bg/50 rounded-lg border border-fg/10">
+              <div class="w-16 h-16 flex-shrink-0">
+                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover rounded-lg" />
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-medium text-fg text-sm truncate mb-2">${item.title}</h4>
+                
+                <div class="flex items-center gap-2 text-xs text-fg/70 flex-wrap mb-2">
+                  <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${item.size || 'L'}</span>
+                  <span class="text-fg/40">/</span>
+                  <div class="flex items-center gap-1">
+                    <div class="w-2 h-2 rounded border ${colorClass}"></div>
+                    <span class="bg-fg/10 px-2 py-0.5 rounded text-fg font-medium">${item.color || 'Black'}</span>
+                  </div>
+                  <span class="text-fg/40">/</span>
+                  <span class="bg-primary/10 px-2 py-0.5 rounded text-primary font-medium capitalize">${item.quality || 'Premium'}</span>
+                  ${hasCustomUrl && item.customUrl ? `
+                    <span class="text-fg/40">/</span>
+                    <div class="flex items-center gap-1 group relative">
+                      <svg class="w-3 h-3 text-primary" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                      </svg>
+                      <a href="${item.customUrl || '#'}" target="_blank" rel="noopener noreferrer" class="bg-primary/10 px-2 py-0.5 rounded text-primary font-medium text-xs hover:bg-primary/20 transition-colors duration-200">Custom URL</a>
+                      <div class="absolute left-0 top-full mt-1 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
+                        ${(item.customUrl || '').length > 30 ? (item.customUrl || '').substring(0, 30) + '...' : (item.customUrl || '')}
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+                
+                <div class="flex justify-between items-end">
+                  <span class="text-xs text-fg/70">Qty: ${item.quantity}</span>
+                  <div class="text-right">
+                    <div class="text-xs text-fg/70">${item.price} each</div>
+                    <div class="text-sm font-semibold text-primary">$${itemTotal}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        private updateOrderSummary() {
+          const subtotal = this.cartItems.reduce((sum, item) => {
+            return sum + (parseFloat(item.price.replace('$', '')) * item.quantity);
+          }, 0);
+
+          const discount = subtotal * this.discountRate;
+          const discountedSubtotal = subtotal - discount;
+          const tax = 0; // No tax charged
+          const shipping = 0; // Free shipping
+          const total = discountedSubtotal; // Total is just the discounted subtotal
+          const totalItems = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+          // Update display elements
+          const totalItemsEl = document.getElementById('total-items');
+          const subtotalEl = document.getElementById('checkout-subtotal');
+          const discountRowEl = document.getElementById('discount-row');
+          const discountAmountEl = document.getElementById('discount-amount');
+          const discountCodeDisplayEl = document.getElementById('discount-code-display');
+          const totalEl = document.getElementById('checkout-total');
+
+          if (totalItemsEl) totalItemsEl.textContent = totalItems.toString();
+          if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+          if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+          // Show/hide discount row
+          if (this.discountRate > 0 && discountRowEl && discountAmountEl && discountCodeDisplayEl) {
+            discountRowEl.classList.remove('hidden');
+            discountAmountEl.textContent = `-$${discount.toFixed(2)}`;
+            discountCodeDisplayEl.textContent = this.discountCode;
+          } else if (discountRowEl) {
+            discountRowEl.classList.add('hidden');
+          }
+        }
+
+        private applyDiscountCode() {
+          const discountCodeInput = document.getElementById('discount-code') as HTMLInputElement;
+          const discountMessage = document.getElementById('discount-message');
+          const code = discountCodeInput?.value.trim().toUpperCase();
+
+          if (!code) {
+            this.showDiscountMessage('Please enter a discount code.', 'error');
+            return;
+          }
+
+          if (code === 'PRE25') {
+            this.discountRate = 0.20; // 20% discount
+            this.discountCode = code;
+            this.updateOrderSummary();
+            this.showDiscountMessage('Discount applied! 20% off your order.', 'success');
+            
+            // Disable the input and button
+            if (discountCodeInput) discountCodeInput.disabled = true;
+            const applyBtn = document.getElementById('apply-discount') as HTMLButtonElement;
+            if (applyBtn) {
+              applyBtn.disabled = true;
+              applyBtn.textContent = 'Applied';
+              applyBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+          } else {
+            this.showDiscountMessage('Invalid discount code. Please try again.', 'error');
+          }
+        }
+
+        private showDiscountMessage(message: string, type: 'success' | 'error') {
+          const discountMessage = document.getElementById('discount-message');
+          if (discountMessage) {
+            discountMessage.textContent = message;
+            discountMessage.className = `mt-2 text-sm ${type === 'success' ? 'text-green-500' : 'text-red-500'}`;
+            discountMessage.classList.remove('hidden');
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+              discountMessage.classList.add('hidden');
+            }, 5000);
+          }
+        }
+
+        private autoFillContact() {
+          const firstNameInput = document.getElementById('first-name') as HTMLInputElement;
+          const lastNameInput = document.getElementById('last-name') as HTMLInputElement;
+          const emailInput = document.getElementById('email') as HTMLInputElement;
+          const phoneInput = document.getElementById('phone') as HTMLInputElement;
+
+          if (firstNameInput) firstNameInput.value = 'John';
+          if (lastNameInput) lastNameInput.value = 'Doe';
+          if (emailInput) emailInput.value = 'john.doe@example.com';
+          if (phoneInput) phoneInput.value = '+1 (555) 123-4567';
+
+          this.showMessage('Contact information auto-filled!', 'success');
+        }
+
+        private autoFillBilling() {
+          const addressInput = document.getElementById('billing-address') as HTMLInputElement;
+          const cityInput = document.getElementById('billing-city') as HTMLInputElement;
+          const stateInput = document.getElementById('billing-state') as HTMLInputElement;
+          const zipInput = document.getElementById('billing-zip') as HTMLInputElement;
+          const countrySelect = document.getElementById('billing-country') as HTMLSelectElement;
+
+          if (addressInput) addressInput.value = '123 Main Street';
+          if (cityInput) cityInput.value = 'New York';
+          if (stateInput) stateInput.value = 'NY';
+          if (zipInput) zipInput.value = '10001';
+          if (countrySelect) countrySelect.value = 'US';
+
+          this.showMessage('Billing address auto-filled!', 'success');
+        }
+
+        private validateForm(): boolean {
+          const form = document.getElementById('checkout-form') as HTMLFormElement;
+          if (!form) return false;
+
+          const requiredFields = form.querySelectorAll('input[required], select[required]');
+          let isValid = true;
+
+          requiredFields.forEach(field => {
+            const input = field as HTMLInputElement;
+            if (!input.value.trim()) {
+              isValid = false;
+              input.classList.add('border-red-500');
+            } else {
+              input.classList.remove('border-red-500');
+            }
+          });
+
+          // Email validation
+          const emailField = document.getElementById('email') as HTMLInputElement;
+          if (emailField && emailField.value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailField.value)) {
+              isValid = false;
+              emailField.classList.add('border-red-500');
+            } else {
+              emailField.classList.remove('border-red-500');
+            }
+          }
+
+          return isValid;
+        }
+
+        private collectFormData(): CheckoutData | null {
+          const form = document.getElementById('checkout-form') as HTMLFormElement;
+          if (!form || !this.validateForm()) {
+            return null;
+          }
+
+          const formData = new FormData(form);
+          const sameAsBilling = (document.getElementById('same-as-billing') as HTMLInputElement).checked;
+
+          const subtotal = this.cartItems.reduce((sum, item) => {
+            return sum + (parseFloat(item.price.replace('$', '')) * item.quantity);
+          }, 0);
+
+          const discount = subtotal * this.discountRate;
+          const discountedSubtotal = subtotal - discount;
+          const tax = 0; // No tax charged
+          const shipping = 0; // Free shipping
+          const total = discountedSubtotal; // Total is just the discounted subtotal
+
+          const checkoutData: CheckoutData = {
+            customer: {
+              firstName: formData.get('firstName') as string,
+              lastName: formData.get('lastName') as string,
+              email: formData.get('email') as string,
+              phone: formData.get('phone') as string,
+            },
+            billing: {
+              address: formData.get('billingAddress') as string,
+              city: formData.get('billingCity') as string,
+              state: formData.get('billingState') as string,
+              zip: formData.get('billingZip') as string,
+              country: formData.get('billingCountry') as string,
+            },
+            shipping: {
+              address: sameAsBilling ? formData.get('billingAddress') as string : formData.get('shippingAddress') as string,
+              city: sameAsBilling ? formData.get('billingCity') as string : formData.get('shippingCity') as string,
+              state: sameAsBilling ? formData.get('billingState') as string : formData.get('shippingState') as string,
+              zip: sameAsBilling ? formData.get('billingZip') as string : formData.get('shippingZip') as string,
+              country: sameAsBilling ? formData.get('billingCountry') as string : formData.get('shippingCountry') as string,
+              sameAsBilling: sameAsBilling,
+            },
+            specialInstructions: formData.get('specialInstructions') as string,
+            items: this.cartItems,
+            totals: {
+              subtotal: subtotal,
+              discount: discount,
+              discountCode: this.discountCode,
+              tax: tax,
+              shipping: shipping,
+              total: total,
+            },
+          };
+
+          return checkoutData;
+        }
+
+        private async handleProceedToPayment() {
+          const checkoutData = this.collectFormData();
+          
+          if (!checkoutData) {
+            // Show validation errors
+            const firstInvalidField = document.querySelector('.border-red-500') as HTMLElement;
+            if (firstInvalidField) {
+              firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              firstInvalidField.focus();
+            }
+            
+            // Show error message
+            this.showMessage('Please fill in all required fields correctly.', 'error');
+            return;
+          }
+
+          // Store checkout data for reference
+          localStorage.setItem('checkout-data', JSON.stringify(checkoutData));
+          
+          // Show loading state
+          const proceedButton = document.getElementById('proceed-to-payment') as HTMLButtonElement;
+          if (proceedButton) {
+            proceedButton.disabled = true;
+            proceedButton.innerHTML = `
+              <div class="flex items-center justify-center gap-2">
+                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-bg"></div>
+                <span>Processing...</span>
+              </div>
+            `;
+          }
+          
+          try {
+            // Debug: Log checkout data being sent
+            console.log('Sending checkout data:', checkoutData);
+            
+            // Create Stripe checkout session
+            const response = await fetch('/api/create-checkout-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(checkoutData),
+            });
+
+            if (!response.ok) {
+              // Get error details from response
+              const errorText = await response.text();
+              let errorData;
+              try {
+                errorData = JSON.parse(errorText);
+              } catch {
+                errorData = { error: 'Server error', details: errorText };
+              }
+              throw new Error(`${errorData.error}: ${errorData.details || 'Unknown error'}`);
+            }
+
+            const result = await response.json();
+
+            if (result.error) {
+              throw new Error(`${result.error}: ${result.details || 'Unknown error'}`);
+            }
+
+            // Redirect to Stripe Checkout
+            if (result.url) {
+              window.location.href = result.url;
+            } else {
+              throw new Error('No checkout URL received from Stripe');
+            }
+
+          } catch (error) {
+            console.error('Error creating checkout session:', error);
+            this.showMessage(`Payment setup failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+            
+            // Reset button state
+            if (proceedButton) {
+              proceedButton.disabled = false;
+              proceedButton.innerHTML = `
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+                </svg>
+                Proceed to Payment
+              `;
+            }
+          }
+        }
+
+        private showMessage(message: string, type: 'success' | 'error') {
+          // Create a temporary message element
+          const messageEl = document.createElement('div');
+          messageEl.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white font-medium transition-all duration-300 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+          }`;
+          messageEl.textContent = message;
+          
+          document.body.appendChild(messageEl);
+          
+          // Remove after 3 seconds
+          setTimeout(() => {
+            messageEl.remove();
+          }, 3000);
+        }
+      }
+
+      // Initialize checkout when DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        new CheckoutManager();
+      });
+    </script>
+  </body>
+</html> 

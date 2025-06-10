@@ -1,0 +1,38 @@
+---
+const stripePublicKey = import.meta.env.STRIPE_PUBLIC_KEY;
+const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
+---
+
+<html>
+  <head>
+    <title>Environment Test</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5;">
+    <h1>Environment Variables Test</h1>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h2>Stripe Configuration</h2>
+      <p><strong>Public Key:</strong> {stripePublicKey ? '✅ Loaded' : '❌ Missing'}</p>
+      <p><strong>Secret Key:</strong> {stripeSecretKey ? '✅ Loaded' : '❌ Missing'}</p>
+      
+      {stripePublicKey && (
+        <p><strong>Public Key Preview:</strong> {stripePublicKey.substring(0, 20)}...</p>
+      )}
+      
+      {stripeSecretKey && (
+        <p><strong>Secret Key Preview:</strong> {stripeSecretKey.substring(0, 20)}...</p>
+      )}
+    </div>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <h2>Key Validation</h2>
+      <p><strong>Public Key Valid:</strong> {stripePublicKey?.startsWith('pk_') ? '✅ Yes' : '❌ No'}</p>
+      <p><strong>Secret Key Valid:</strong> {stripeSecretKey?.startsWith('sk_') ? '✅ Yes' : '❌ No'}</p>
+      <p><strong>Test Mode:</strong> {stripeSecretKey?.includes('test') ? '✅ Yes' : '❌ No (Live mode)'}</p>
+    </div>
+    
+    <a href="/checkout" style="display: inline-block; background: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+      Go to Checkout
+    </a>
+  </body>
+</html> 

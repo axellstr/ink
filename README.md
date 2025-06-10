@@ -1,116 +1,106 @@
-# Ink
+# Tremendous Tower - Premium T-Shirt Store
 
-A modern web application built with Astro and TailwindCSS.
+A modern, full-featured e-commerce website built with Astro, featuring custom QR code generation and Stripe payment integration.
 
-## Project Overview
+## Features
 
-Ink is a sleek, responsive web application that demonstrates modern web development practices using Astro, TailwindCSS, and Three.js.
+- 🛍️ **Product Catalog** - Browse and view detailed product pages
+- 🛒 **Shopping Cart** - Add items, manage quantities, and customize orders
+- 🎨 **Product Customization** - Select sizes, colors, and quality options
+- 🔗 **QR Code Generation** - Add custom URLs that get printed as QR codes on products
+- 💳 **Stripe Integration** - Secure payment processing
+- 📱 **Responsive Design** - Optimized for desktop and mobile
+- 🌙 **Dark/Light Theme** - Toggle between themes
+- ✨ **Modern UI** - Beautiful animations and transitions
 
-## Technologies Used
+## Quick Start
 
-- [Astro](https://astro.build/) - Fast, modern static site generator
-- [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [Three.js](https://threejs.org/) - 3D graphics library
-
-## Getting Started
-
-1. Clone the repository
-   ```
-   git clone https://github.com/axellstr/ink.git
-   cd ink
-   ```
-
-2. Install dependencies
-   ```
+1. **Install Dependencies**
+   ```bash
    npm install
    ```
 
-3. Start the development server
+2. **Set up Environment Variables**
+   
+   Edit the `.env` file and add your Stripe keys:
+   ```env
+   # Get these from your Stripe Dashboard: https://dashboard.stripe.com/apikeys
+   STRIPE_PUBLIC_KEY=pk_test_your_actual_publishable_key_here
+   STRIPE_SECRET_KEY=sk_test_your_actual_secret_key_here
    ```
+
+3. **Run Development Server**
+   ```bash
    npm run dev
    ```
 
-4. Build for production
-   ```
-   npm run build
-   ```
+4. **Open in Browser**
+   Visit `http://localhost:4322`
 
-## Deployment on Vercel
+## Stripe Setup
 
-This project is configured for seamless deployment on Vercel:
+1. **Create a Stripe Account**
+   - Go to [stripe.com](https://stripe.com) and create an account
+   - Complete the account verification process
 
-1. Push your repository to GitHub
-2. Import your repository on [Vercel](https://vercel.com/new)
-3. Vercel will detect Astro and use the appropriate build settings automatically
-4. Click "Deploy"
+2. **Get Your API Keys**
+   - Visit your [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
+   - Copy your **Publishable key** (starts with `pk_test_`)
+   - Copy your **Secret key** (starts with `sk_test_`)
 
-Alternatively, you can deploy directly from the CLI:
+3. **Update Environment Variables**
+   - Replace the placeholder values in `.env` with your actual Stripe keys
+   - **Important**: Keep your secret key private and never commit it to version control
 
-```
-npm install -g vercel
-vercel
-```
+4. **Test the Integration**
+   - Add items to cart and proceed to checkout
+   - Use Stripe's test card numbers:
+     - Success: `4242 4242 4242 4242`
+     - Declined: `4000 0000 0000 0002`
+     - Use any future expiry date and any 3-digit CVC
 
 ## Project Structure
 
 ```
-/
-├── public/       # Static assets
-├── src/
-│   ├── components/  # UI components
-│   ├── data/        # Data files
-│   ├── pages/       # Page components and routing
-│   ├── scripts/     # JavaScript utilities
-│   └── styles/      # Global styles
-└── package.json
+src/
+├── components/          # Reusable UI components
+│   ├── Navbar.astro    # Navigation bar
+│   ├── Footer.astro    # Footer component
+│   ├── ShoppingCart.astro # Shopping cart drawer
+│   └── QRCodeGenerator.astro # QR code generation component
+├── pages/              # Route pages
+│   ├── product/        # Dynamic product pages
+│   ├── checkout.astro  # Checkout form
+│   ├── checkout/       
+│   │   └── success.astro # Order success page
+│   └── api/           # API endpoints
+│       └── create-checkout-session.ts # Stripe checkout session
+├── data/
+│   └── products.js     # Product catalog data
+└── styles/            # CSS styles
 ```
 
-## License
+## Customization
 
-MIT
+### Adding Products
+Edit `src/data/products.js` to add or modify products.
 
-```sh
-npm create astro@latest -- --template minimal
+### Styling
+The project uses Tailwind CSS with custom color variables defined in `src/styles/global.css`.
+
+### Payment Processing
+The Stripe integration is handled in `src/pages/api/create-checkout-session.ts`.
+
+## Building for Production
+
+```bash
+npm run build
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+The built files will be in the `dist/` directory.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Support
 
-## 🚀 Project Structure
+For questions about Stripe integration, visit the [Stripe Documentation](https://docs.stripe.com/).
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+For Astro-specific questions, visit the [Astro Documentation](https://docs.astro.build/).

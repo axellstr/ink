@@ -344,8 +344,36 @@
     }
 
     private proceedToCheckout() {
-      // For now, just show an alert - this would integrate with a payment system
-      alert(`Proceeding to checkout with ${this.items.length} items totaling $${this.getCartTotal().toFixed(2)}`);
+      // Check if cart has items
+      if (this.items.length === 0) {
+        this.showMessage('Your cart is empty. Please add items before checkout.', 'error');
+        return;
+      }
+
+      // Save cart data to localStorage for checkout page
+      this.saveCartToStorage();
+      
+      // Close cart drawer
+      this.closeCart();
+      
+      // Navigate to checkout page
+      window.location.href = '/checkout';
+    }
+
+    private showMessage(message: string, type: 'success' | 'error') {
+      // Create a temporary message element
+      const messageEl = document.createElement('div');
+      messageEl.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white font-medium transition-all duration-300 ${
+        type === 'success' ? 'bg-green-500' : 'bg-red-500'
+      }`;
+      messageEl.textContent = message;
+      
+      document.body.appendChild(messageEl);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        messageEl.remove();
+      }, 3000);
     }
 
     private getCartTotal(): number {

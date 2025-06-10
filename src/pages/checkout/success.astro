@@ -1,0 +1,188 @@
+---
+import '../../styles/global.css';
+
+// Get the session ID from the URL parameters
+const sessionId = Astro.url.searchParams.get('session_id');
+---
+
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Order Successful - Premium T-Shirts</title>
+  </head>
+  <body class="bg-bg text-fg min-h-screen">
+    <main class="min-h-screen flex items-center justify-center p-4 sm:p-8">
+      <div class="max-w-5xl w-full">
+        
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          
+          <!-- Left Column: Order ID & Status -->
+          <div class="space-y-6">
+            
+            <!-- Success Icon & Title -->
+            <div class="text-center lg:text-left">
+              <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto lg:mx-0 mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h1 class="text-3xl font-bold text-fg mb-2">Order Confirmed</h1>
+              <p class="text-lg text-fg/70">Payment successful</p>
+            </div>
+
+            <!-- Order Reference -->
+            {sessionId && (
+              <div class="bg-fg/5 rounded-lg p-4">
+                <h2 class="text-sm font-medium text-fg/60 mb-2">Order Reference</h2>
+                <p class="font-mono text-xl text-fg font-semibold">{sessionId.slice(-12)}</p>
+              </div>
+            )}
+
+            <!-- Order Status -->
+            <div class="bg-fg/5 rounded-lg p-4">
+              <h2 class="text-sm font-medium text-fg/60 mb-3">Order Status</h2>
+              
+              <div id="order-details" class="space-y-3">
+                <!-- Loading state -->
+                <div class="flex items-center py-2">
+                  <div class="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent mr-3"></div>
+                  <span class="text-fg/70 text-sm">Loading status...</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Next Steps & Actions -->
+          <div class="space-y-6">
+            
+            <!-- What's Next -->
+            <div>
+              <h2 class="text-xl font-semibold text-fg mb-4">What's Next?</h2>
+              <div class="space-y-4">
+                <div class="flex items-start gap-3 p-3 bg-green-500/10 rounded-lg">
+                  <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-medium text-green-600 mb-1">Email Confirmation Sent</h3>
+                    <p class="text-sm text-fg/70">Check your inbox for order details</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-primary/10 rounded-lg">
+                  <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 animate-pulse">
+                    <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-medium text-primary mb-1">Production Starting</h3>
+                    <p class="text-sm text-fg/70">Custom t-shirts and QR codes within 1 hour</p>
+                  </div>
+                </div>
+
+                <div class="flex items-start gap-3 p-3 bg-fg/5 rounded-lg">
+                  <div class="w-6 h-6 bg-fg/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-3 h-3 text-fg/60" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 01-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m6.75 4.5v-3a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3m-6 0h4.5m-6 0v3a1.5 1.5 0 011.5 1.5h3a1.5 1.5 0 011.5-1.5v-3m-6-3V9.75a1.5 1.5 0 011.5-1.5h3a1.5 1.5 0 011.5 1.5v3m-6 0h4.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 class="font-medium text-fg/70 mb-1">Shipping & Delivery</h3>
+                    <p class="text-sm text-fg/70">Express delivery in 3-5 business days</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div>
+              <h2 class="text-xl font-semibold text-fg mb-4">Continue</h2>
+              <div class="space-y-3">
+                <a href="/shop" class="block w-full bg-primary text-bg text-center py-3 px-6 rounded-lg font-medium hover:bg-primary/90 transition-colors duration-200">
+                  Continue Shopping
+                </a>
+                
+                <a href="/" class="block w-full bg-transparent border border-fg/20 text-fg text-center py-3 px-6 rounded-lg font-medium hover:bg-fg/5 transition-colors duration-200">
+                  Back to Home
+                </a>
+              </div>
+            </div>
+
+            <!-- Support -->
+            <div class="pt-4">
+              <p class="text-sm text-fg/60 text-center">
+                Need help? <a href="/contact" class="text-primary hover:text-primary/80 font-medium underline">Contact Support</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script define:vars={{ sessionId }}>
+      // Clear the cart after successful purchase
+      localStorage.removeItem('shopping-cart');
+      localStorage.removeItem('checkout-data');
+      
+      // Load order details if session ID is available
+      if (sessionId) {
+        setTimeout(loadOrderDetails, 300);
+      }
+      
+      function loadOrderDetails() {
+        try {
+          const orderDetailsContainer = document.getElementById('order-details');
+          
+          if (orderDetailsContainer) {
+            orderDetailsContainer.innerHTML = `
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-fg/70 text-sm">Payment</span>
+                  <span class="text-green-500 font-medium text-sm">✓ Confirmed</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <span class="text-fg/70 text-sm">Status</span>
+                  <span class="text-primary font-medium text-sm">Processing</span>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                  <span class="text-fg/70 text-sm">Delivery</span>
+                  <span class="text-fg font-medium text-sm">${getEstimatedDelivery()}</span>
+                </div>
+              </div>
+            `;
+          }
+        } catch (error) {
+          console.error('Error loading order details:', error);
+          const orderDetailsContainer = document.getElementById('order-details');
+          if (orderDetailsContainer) {
+            orderDetailsContainer.innerHTML = `
+              <div class="text-center py-2">
+                <p class="text-green-500 font-medium text-sm mb-1">✓ Payment Confirmed</p>
+                <p class="text-fg/70 text-xs">Details sent via email</p>
+              </div>
+            `;
+          }
+        }
+      }
+      
+      function getEstimatedDelivery() {
+        const now = new Date();
+        const deliveryDate = new Date(now.getTime() + (5 * 24 * 60 * 60 * 1000));
+        return deliveryDate.toLocaleDateString('en-US', { 
+          month: 'short', 
+          day: 'numeric' 
+        });
+      }
+    </script>
+  </body>
+</html> 

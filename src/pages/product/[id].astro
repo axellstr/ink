@@ -6,16 +6,16 @@ import ShoppingCart from '../../components/ShoppingCart.astro';
 import QRCodeGenerator from '../../components/QRCodeGenerator.astro';
 import { products } from '../../data/products.js';
 
-// Generate static paths for all products
-export async function getStaticPaths() {
-  return products.map((product) => ({
-    params: { id: product.id.toString() },
-    props: { product },
-  }));
-}
+// Get the product ID from URL params
+const { id } = Astro.params;
 
-// Get the product from props
-const { product } = Astro.props;
+// Find the product by ID
+const product = products.find(p => p.id.toString() === id);
+
+// Handle case where product is not found
+if (!product) {
+  return Astro.redirect('/404');
+}
 
 // Quality options
 const qualityOptions = [
@@ -88,9 +88,9 @@ const colors = [
                 alt={product.title}
                 class="h-full w-full object-cover"
               />
-              <!-- Magnifying Lens -->
-              <div id="magnifying-lens" class="absolute pointer-events-none opacity-0 transition-opacity duration-200 ease-out">
-                <div class="w-[200px] h-[200px] rounded-sm border-1 border-primary/10backdrop-blur-md shadow-2xl overflow-hidden">
+                            <!-- Magnifying Lens -->
+              <div id="magnifying-lens" class="absolute pointer-events-none opacity-0 transition-opacity duration-200 ease-out hidden md:block">
+                <div class="w-[200px] h-[200px] rounded-sm border-1 border-primary/10 backdrop-blur-md shadow-2xl overflow-hidden">
                   <img 
                     id="lens-image"
                     src={product.image} 
@@ -99,8 +99,7 @@ const colors = [
                   />
                 </div>
               </div>
-
-            </div>
+              </div>
 
             <!-- Thumbnail Images -->
             <div class="grid grid-cols-4 gap-3">
@@ -334,55 +333,126 @@ const colors = [
       </div>
     </main>
 
+    <!-- Full-screen Image Modal for Mobile -->
+    <div id="image-modal" class="fixed inset-0 bg-black z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+      <div class="relative w-full h-full flex items-center justify-center p-4">
+        <!-- Close Button -->
+        <button id="close-modal" class="absolute top-16 right-6 z-[9999] w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-all duration-200 shadow-2xl border border-white/10">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <!-- Full-screen Image -->
+        <img 
+          id="modal-image"
+          src=""
+          alt="Full size product image"
+          class="max-w-full max-h-full object-contain rounded-lg"
+        />
+      </div>
+    </div>
+
     <Footer />
     <ShoppingCart />
 
     <!-- JavaScript for interactivity -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Magnifying lens functionality
+        // Utility function to detect mobile devices
+        function isMobile() {
+          return window.innerWidth < 768; // md breakpoint in Tailwind
+        }
+
+        // Image interaction functionality
         const imageContainer = document.getElementById('image-container');
         const mainImage = document.getElementById('main-image') as HTMLImageElement;
         const magnifyingLens = document.getElementById('magnifying-lens');
         const lensImage = document.getElementById('lens-image') as HTMLImageElement;
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image') as HTMLImageElement;
+        const closeModal = document.getElementById('close-modal');
         
-        if (imageContainer && mainImage && magnifyingLens && lensImage) {
-          const lensSize = 200; // 200px
-          const zoomLevel = 5.5;
+        if (imageContainer && mainImage) {
+          // Mobile: Full-screen modal functionality
+          if (isMobile()) {
+            imageContainer.addEventListener('click', function() {
+              if (imageModal && modalImage) {
+                modalImage.src = mainImage.src;
+                imageModal.style.opacity = '1';
+                imageModal.style.pointerEvents = 'auto';
+                document.body.style.overflow = 'hidden';
+              }
+            });
+            
+            // Add cursor pointer for mobile
+            imageContainer.style.cursor = 'pointer';
+          }
           
-          imageContainer.addEventListener('mouseenter', function() {
-            magnifyingLens.style.opacity = '1';
-          });
-          
-          imageContainer.addEventListener('mouseleave', function() {
-            magnifyingLens.style.opacity = '0';
-          });
-          
-          imageContainer.addEventListener('mousemove', function(e) {
-            const rect = imageContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+          // Desktop: Magnifying lens functionality
+          else if (magnifyingLens && lensImage) {
+            const lensSize = 200; // 200px
+            const zoomLevel = 5.5;
             
-            // Position the lens centered on the cursor
-            const lensX = x - lensSize / 2;
-            const lensY = y - lensSize / 2;
+            imageContainer.addEventListener('mouseenter', function() {
+              magnifyingLens.style.opacity = '1';
+            });
             
-            // Keep lens within image bounds
-            const boundedLensX = Math.max(0, Math.min(lensX, rect.width - lensSize));
-            const boundedLensY = Math.max(0, Math.min(lensY, rect.height - lensSize));
+            imageContainer.addEventListener('mouseleave', function() {
+              magnifyingLens.style.opacity = '0';
+            });
             
-            magnifyingLens.style.left = `${boundedLensX}px`;
-            magnifyingLens.style.top = `${boundedLensY}px`;
-            
-            // Calculate the position for the magnified image
-            const imageX = (x / rect.width) * 100;
-            const imageY = (y / rect.height) * 100;
-            
-            // Position the magnified image inside the lens
-            lensImage.style.transformOrigin = `${imageX}% ${imageY}%`;
-            lensImage.style.transform = `scale(${zoomLevel})`;
-          });
+            imageContainer.addEventListener('mousemove', function(e) {
+              const rect = imageContainer.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              
+              // Position the lens centered on the cursor
+              const lensX = x - lensSize / 2;
+              const lensY = y - lensSize / 2;
+              
+              // Keep lens within image bounds
+              const boundedLensX = Math.max(0, Math.min(lensX, rect.width - lensSize));
+              const boundedLensY = Math.max(0, Math.min(lensY, rect.height - lensSize));
+              
+              magnifyingLens.style.left = `${boundedLensX}px`;
+              magnifyingLens.style.top = `${boundedLensY}px`;
+              
+              // Calculate the position for the magnified image
+              const imageX = (x / rect.width) * 100;
+              const imageY = (y / rect.height) * 100;
+              
+              // Position the magnified image inside the lens
+              lensImage.style.transformOrigin = `${imageX}% ${imageY}%`;
+              lensImage.style.transform = `scale(${zoomLevel})`;
+            });
+          }
         }
+
+        // Modal close functionality
+        function closeImageModal() {
+          if (imageModal) {
+            imageModal.style.opacity = '0';
+            imageModal.style.pointerEvents = 'none';
+            document.body.style.overflow = '';
+          }
+        }
+
+        closeModal?.addEventListener('click', closeImageModal);
+        
+        // Close modal when clicking outside the image
+        imageModal?.addEventListener('click', function(e) {
+          if (e.target === imageModal) {
+            closeImageModal();
+          }
+        });
+
+        // Close modal with escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape' && imageModal?.style.opacity === '1') {
+            closeImageModal();
+          }
+        });
 
         // Thumbnail functionality
         document.querySelectorAll('.thumbnail-btn').forEach(button => {
@@ -390,14 +460,20 @@ const colors = [
             const newImage = this.dataset.image;
             const mainImage = document.getElementById('main-image') as HTMLImageElement;
             const lensImage = document.getElementById('lens-image') as HTMLImageElement;
+            const modalImage = document.getElementById('modal-image') as HTMLImageElement;
             
             if (mainImage && newImage) {
               mainImage.src = newImage;
             }
             
-            // Update lens image as well
+            // Update lens image as well (desktop)
             if (lensImage && newImage) {
               lensImage.src = newImage;
+            }
+            
+            // Update modal image if it's currently open (mobile)
+            if (modalImage && newImage && imageModal?.style.opacity === '1') {
+              modalImage.src = newImage;
             }
             
             // Update active thumbnail

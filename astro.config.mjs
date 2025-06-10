@@ -11,7 +11,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  output: 'static',  // Optimal for Vercel deployment
+  output: 'server',  // Server mode for API routes
   build: {
     format: 'directory'
   }
